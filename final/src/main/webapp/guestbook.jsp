@@ -13,6 +13,8 @@
 <%@ page import="com.google.appengine.api.datastore.Query" %>
 <%-- //[END imports]--%>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
@@ -23,15 +25,17 @@
 <body>
 
 <%
-    String guestbookName = request.getParameter("guestbookName");
-    if (guestbookName == null) {
-        guestbookName = "default";
+    String desiredDate = request.getParameter("date");
+    if (desiredDate == null) {
+        SimpleDateFormat sd = new SimpleDateFormat("yyMMdd");
+        Date now = new Date();
+        desiredDate = sd.format(now);
     }
-    pageContext.setAttribute("guestbookName", guestbookName);
+    //pageContext.setAttribute("guestbookName", guestbookName);
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
     if (user != null) {
-        pageContext.setAttribute("user", user);
+        pageContext.setAttribute("user", user);        
 %>
 
 <p>Hello, ${fn:escapeXml(user.nickname)}! (You can
@@ -49,51 +53,41 @@
 <%-- //[START datastore]--%>
 <%
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Key guestbookKey = KeyFactory.createKey("Guestbook", guestbookName);
+    Key guestbookKey = KeyFactory.createKey("vote", desiredDate);
     // Run an ancestor query to ensure we see the most up-to-date
     // view of the Greetings belonging to the selected Guestbook.
-    Query query = new Query("Greeting", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+    Query query = new Query("vote", guestbookKey);
     List<Entity> greetings = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
     if (greetings.isEmpty()) {
 %>
-<p>Guestbook '${fn:escapeXml(guestbookName)}' has no messages.</p>
+<p> no reservation yet. </p>
 <%
     } else {
 %>
-<p>Messages in Guestbook '${fn:escapeXml(guestbookName)}'.</p>
+<p>current reservations:</p>
 <%
-        for (Entity greeting : greetings) {
-            pageContext.setAttribute("greeting_content",
-                    greeting.getProperty("content"));
-            String author;
-            if (greeting.getProperty("author_email") == null) {
-                author = "An anonymous person";
-            } else {
-                author = (String)greeting.getProperty("author_email");
-                String author_id = (String)greeting.getProperty("author_id");
-                if (user != null && user.getUserId().equals(author_id)) {
-                    author += " (You)";
-                }
-            }
-            pageContext.setAttribute("greeting_user", author);
+        Entity entity = greetings.get(0);
+        java.util.Map<String, Object> map = entity.getProperties();
+        for (String time : map.keySet()) {
+            String v = (String)map.get(time);
+            pageContext.setAttribute("voteTime", time);
+            pageContext.setAttribute("voter", v);
 %>
-<p><b>${fn:escapeXml(greeting_user)}</b> wrote:</p>
-<blockquote>${fn:escapeXml(greeting_content)}</blockquote>
+<p>${fn:escapeXml(voteTime)}</b> : ${fn:escapeXml(voter)}</p>
 <%
         }
     }
 %>
 
-<form action="/sign" method="post">
-    <div><textarea name="content" rows="3" cols="60"></textarea></div>
-    <div><input type="submit" value="Post Greeting"/></div>
-    <input type="hidden" name="guestbookName" value="${fn:escapeXml(guestbookName)}"/>
+<form action="/vote" method="post">
+    <select name="time">
+        <option value="0"> undefined  </option>
+        <option value="5:30"> 5:30  </option>
+        <option value="5:50"> 5:50  </option>
+    </select>
+    <input type="submit" value="vote!"/>
 </form>
-<%-- //[END datastore]--%>
-<form action="/guestbook.jsp" method="get">
-    <div><input type="text" name="guestbookName" value="${fn:escapeXml(guestbookName)}"/></div>
-    <div><input type="submit" value="Switch Guestbook"/></div>
-</form>
+
 
 </body>
 </html>

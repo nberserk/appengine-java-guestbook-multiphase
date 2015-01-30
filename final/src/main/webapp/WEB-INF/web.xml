@@ -3,16 +3,16 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <servlet>
-        <servlet-name>sign</servlet-name>
-        <servlet-class>com.example.guestbook.SignGuestbookServlet</servlet-class>
+        <servlet-name>vote</servlet-name>
+        <servlet-class>com.example.guestbook.VoteServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>guestbook</servlet-name>
         <servlet-class>com.example.guestbook.GuestbookServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>sign</servlet-name>
-        <url-pattern>/sign</url-pattern>
+        <servlet-name>vote</servlet-name>
+        <url-pattern>/vote</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>guestbook</servlet-name>

@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.17a</version>
+            <version>1.9.17</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -40,13 +40,13 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>1.9.17a</version>
+            <version>1.9.17</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>1.9.17a</version>
+            <version>1.9.17</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -54,6 +54,7 @@
     <build>
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+        <pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -98,9 +99,11 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.9.17a</version>
+                <version>1.9.17</version>
                 <configuration>
-                    <enableJarClasses>false</enableJarClasses>
+                  <enableJarClasses>false</enableJarClasses>
+                  <fullScanSeconds>1</fullScanSeconds>
+                  <disableUpdateCheck>true</disableUpdateCheck>          
                     <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
                     <!-- address>0.0.0.0</address>
                     <port>8080</port -->
@@ -112,5 +115,26 @@
                 </configuration>
             </plugin>
         </plugins>
+        </pluginManagement>
+        <plugins>
+        <plugin>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <version>1.9.17</version>
+                <configuration>
+                  <enableJarClasses>false</enableJarClasses>
+                  <fullScanSeconds>1</fullScanSeconds>
+                  <disableUpdateCheck>true</disableUpdateCheck>          
+                    <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
+                    <!-- address>0.0.0.0</address>
+                    <port>8080</port -->
+                    <!-- Comment in the below snippet to enable local debugging with a remove debugger
+                         like those included with Eclipse or IntelliJ -->
+                    <!-- jvmFlags>
+                      <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag>
+                    </jvmFlags -->
+                </configuration>
+            </plugin>
+        </plugins>        
     </build>
 </project>

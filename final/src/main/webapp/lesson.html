@@ -1,0 +1,34 @@
+<html>
+  <body>
+
+    
+    <form action="/vote" method="post">
+      <table>        
+        <tr>
+          <td>      
+            <input type="radio" name="time" value="530"> 5:30
+          </td>
+          <td id="slot1">unknown</td>
+        </tr>
+        <tr>
+          <td>
+            <input type="radio" name="time" value="530"> 5:50
+          </td>
+          <td>oops</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+        <div><input type="submit" value="vote"/></div>      
+          </td>        
+        </tr>        
+        </table>
+    </form>
+
+    <select name="time">
+        <option value="0"> undefined  </option>
+        <option value="530"> 5:30  </option>
+        <option value="550"> 5:50  </option>
+    </select>
+
+</body>
+</html>
