@@ -17,9 +17,13 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<!DOCTYPE html> 
 <html>
 <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
 </head>
 
 <body>
@@ -33,12 +37,12 @@
     }
     //pageContext.setAttribute("guestbookName", guestbookName);
     UserService userService = UserServiceFactory.getUserService();
-    User user = userService.getCurrentUser();
-    if (user != null) {
-        pageContext.setAttribute("user", user);        
+   // User user = userService.getCurrentUser();
+    //if (user != null) {
+    //    pageContext.setAttribute("user", user);        
 %>
 
-<p>Hello, ${fn:escapeXml(user.nickname)}! (You can
+<%-- <p>Hello, ${fn:escapeXml(user.nickname)}! (You can
     <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
 <%
     } else {
@@ -48,9 +52,9 @@
     to include your name with greetings you post.</p>
 <%
     }
-%>
+%> --%>
 
-<%-- //[START datastore]--%>
+
 <%
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Key guestbookKey = KeyFactory.createKey("vote", desiredDate);
@@ -81,11 +85,16 @@
 
 <form action="/vote" method="post">
     <select name="time">
-        <option value="0"> undefined  </option>
+        <option value="0"> 예비  </option>
         <option value="5:30"> 5:30  </option>
         <option value="5:50"> 5:50  </option>
+        <option value="6:10"> 6:10  </option>
+        <option value="6:30"> 6:30  </option>
+        <option value="6:50"> 6:50  </option>
+        <option value="7:10"> 7:10  </option>
     </select>
-    <input type="submit" value="vote!"/>
+    <input type="text" name="name"/>
+    <input type="submit" value="투표" onclick="checkInput()"/>    
 </form>
 
 

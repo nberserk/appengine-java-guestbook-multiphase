@@ -1,51 +1,46 @@
-/**
- * Copyright 2014 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-//[START all]
+
 package com.example.guestbook;
 
-import com.google.appengine.api.datastore.*;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import com.example.guestbook.TimeTable.TimeSlot;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.repackaged.com.google.gson.Gson;
 
 public class VoteServlet extends HttpServlet {
     private static final String KIND = "vote";
+    private static final String ENTITY_KEY = "json";
     private static Logger sLogger = Logger.getLogger("VoteServlet");
+    private static Gson sGson = new Gson();
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();
-        if (user==null){
-            resp.sendRedirect("/status.jsp");
-            return;
-        }
+//        UserService userService = UserServiceFactory.getUserService();
+//        User user = userService.getCurrentUser();
+//        if (user==null){
+//            resp.sendRedirect("/status.jsp");
+//            return;
+//        }
 
-        String userName = user.getEmail();
+        String userName = req.getParameter("name");
+        if(userName==null){
+        	resp.sendRedirect("/status.jsp");
+        	return;
+        }
 
         Date now = new Date();
         String desiredDate = req.getParameter("date");
@@ -65,34 +60,37 @@ public class VoteServlet extends HttpServlet {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         Key key = KeyFactory.createKey(KIND, desiredDate);
         
-        
         try {
 			Entity entity = ds.get(key);
-			String votedTime=null;
-			boolean occupied = false;
-            Map<String,Object> map = entity.getProperties();
-            for(String k : map.keySet()){
-            	if(userName.equals(map.get(k))){
-            		votedTime = k;            
-            	}
-            	if(k.equals(timeslot))
-            		occupied = true;
-            } 
-            
-            if (!occupied) {
-            	if(votedTime!=null)
-            		entity.removeProperty(votedTime);
-            	entity.setProperty(timeslot, userName);
-                sLogger.info("updated: "+timeslot+", "+userName);
-                ds.put(entity);
-			}else{
-				sLogger.info(timeslot + " already reserved");
+			TimeTable tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TimeTable.class);
+			// remove if already voted
+			ArrayList<TimeSlot> tss = tt.getSlots();
+			for (TimeSlot t : tss) {
+				if (t.getVoter().contains(userName)){
+					t.getVoter().remove(userName);
+					break;
+				}
 			}
+			
+			TimeSlot ts = tt.getSlot(timeslot);
+			if (ts==null){
+				ts = new TimeSlot(timeslot, userName);
+				tt.addSlot(ts);
+			}else{
+				ts.addVoter(userName);
+			}
+			
+			String jsonString = sGson.toJson(tt);
+			entity.setProperty(ENTITY_KEY, jsonString);
+			ds.put(entity);
 		} catch (EntityNotFoundException e) {
 			Entity entity = new Entity(KIND, desiredDate);
-			entity.setProperty(timeslot, user.getEmail());
+			TimeTable tt = new TimeTable();
+			tt.getSlots().add(new TimeSlot(timeslot, userName));
+			String jsonString = sGson.toJson(tt);
+			entity.setProperty(ENTITY_KEY, jsonString);
 			ds.put(entity);
-			sLogger.info("added: " + entity.toString());     
+			sLogger.info("added: " + jsonString);     
 		}        
 
         resp.sendRedirect("/guestbook.jsp");
