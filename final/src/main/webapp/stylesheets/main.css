@@ -2,3 +2,10 @@ body {
     font-family: Verdana, Helvetica, sans-serif;
     background-color: #FFFFCC;
 }
+
+FIELDSET{
+    margin: 8px;
+    border: 2px solid black;
+    padding: 8px;
+    border-radius: 4px;
+}

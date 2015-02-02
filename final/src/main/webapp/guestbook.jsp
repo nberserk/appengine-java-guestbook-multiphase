@@ -1,20 +1,22 @@
-<%-- //[START all]--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%-- //[START imports]--%>
 <%@ page import="com.google.appengine.api.datastore.DatastoreService" %>
 <%@ page import="com.google.appengine.api.datastore.DatastoreServiceFactory" %>
 <%@ page import="com.google.appengine.api.datastore.Entity" %>
+<%@ page import="com.google.appengine.api.datastore.EntityNotFoundException" %>
 <%@ page import="com.google.appengine.api.datastore.FetchOptions" %>
 <%@ page import="com.google.appengine.api.datastore.Key" %>
 <%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
 <%@ page import="com.google.appengine.api.datastore.Query" %>
-<%-- //[END imports]--%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.example.guestbook.TimeTable" %>
+<%@ page import="com.example.guestbook.TimeTable.TimeSlot" %>
+<%@ page import="com.google.appengine.repackaged.com.google.gson.Gson" %>
+
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html> 
@@ -36,8 +38,8 @@
         desiredDate = sd.format(now);
     }
     //pageContext.setAttribute("guestbookName", guestbookName);
-    UserService userService = UserServiceFactory.getUserService();
-   // User user = userService.getCurrentUser();
+    //UserService userService = UserServiceFactory.getUserService();
+    //User user = userService.getCurrentUser();
     //if (user != null) {
     //    pageContext.setAttribute("user", user);        
 %>
@@ -57,30 +59,22 @@
 
 <%
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Key guestbookKey = KeyFactory.createKey("vote", desiredDate);
-    // Run an ancestor query to ensure we see the most up-to-date
-    // view of the Greetings belonging to the selected Guestbook.
-    Query query = new Query("vote", guestbookKey);
-    List<Entity> greetings = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(5));
-    if (greetings.isEmpty()) {
+    Key key = KeyFactory.createKey("vote", desiredDate);
+    
+    try{
+    	Entity entity = datastore.get(key);
+		Gson gson = new Gson();
+		TimeTable tt = gson.fromJson((String) entity.getProperty("json"), TimeTable.class);        
+        for (TimeSlot ts : tt.getSlots()) {            
+            pageContext.setAttribute("voteTime", ts.getTime());
+            pageContext.setAttribute("voter", ts.getVoter().toString());
 %>
-<p> no reservation yet. </p>
-<%
-    } else {
-%>
-<p>current reservations:</p>
-<%
-        Entity entity = greetings.get(0);
-        java.util.Map<String, Object> map = entity.getProperties();
-        for (String time : map.keySet()) {
-            String v = (String)map.get(time);
-            pageContext.setAttribute("voteTime", time);
-            pageContext.setAttribute("voter", v);
-%>
-<p>${fn:escapeXml(voteTime)}</b> : ${fn:escapeXml(voter)}</p>
-<%
+            <p>${fn:escapeXml(voteTime)}</b> : ${fn:escapeXml(voter)}</p>
+<% 
         }
-    }
+    } catch (EntityNotFoundException e) {
+    	
+    }    
 %>
 
 <form action="/vote" method="post">

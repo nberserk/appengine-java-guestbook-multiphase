@@ -7,21 +7,21 @@ public class TimeTable {
 	static public class TimeSlot{
 		String time;
 		ArrayList<String> voter = new ArrayList<String>();
-		
+		TimeSlot(){}
 		TimeSlot(String time, String name){
 			this.time = time;
 			voter.add(name);
 		}
 		
-		void addVoter(String v){
+		public void addVoter(String v){
 			voter.add(v);
 		}
 		
-		List<String> getVoter(){
+		public List<String> getVoter(){
 			return voter;
 		}
 		
-		String getTime(){
+		public String getTime(){
 			return time;
 		}
 	}	
