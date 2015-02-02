@@ -7,21 +7,29 @@
 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 <script	src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
 <script>
- $(document).ready(function(){
-	 $("#form").on('submit', function(){
-	     var errorCount=0;
-	     var name = $("#name").val().trim();	    	
-	     if(!name){
-	    	 //alert("이름을 입력하세요!")
-	    		 $("#popupDialog").popup("open");
-	    	 return false;
-	     }	    		
-	     $(this)[0].submit();	        
-	 });
-	 
-
-	
+$(document).ready(function(){
+ $("#form").on('submit', function(){
+     var errorCount=0;
+     var name = $("#name").val().trim();	    	
+     if(!name){
+    	 //alert("이름을 입력하세요!")
+    		 $("#popupDialog").popup("open");
+    	 return false;
+     }	    		
+     $(this)[0].submit();	        
  });
+ 
+//fill time table
+ var times = ["5:30", "5:50", "6:10", "6:30", "6:50", "7:10", "7:30", "7:50", "8:10", "8:30", "8:50"];
+ var combo = $("#lessonTime");
+ console.log(combo);
+ $.each(times, function(index, data){
+	 console.log(data);
+	 $('<option>').text(data).appendTo(combo); 
+ });
+ $('#lessonTime:visible').listview("refresh");
+});
+
  
  $(document).ready(function(){
 	 $.getJSON("http://localhost:8080/table", function(tt){	
@@ -61,9 +69,9 @@
 			<form action="/vote" method="post" id="form" data-theme="b">
 				<label for="select-choice-a" class="select">시간 :</label>
                 <select name="select-choice-a" id="lessonTime" data-native-menu="false">
-							<option value="5:30">5:30</option>
+						<!-- 	<option value="5:30">5:30</option>
 							<option value="5:50">5:50</option>
-							<option value="6:10">6:10</option>
+							<option value="6:10">6:10</option> -->
 				</select>
                 <input type="text" name="username" id="name" value=""
 							placeholder="이름" /> <input type="submit" value="투표" />

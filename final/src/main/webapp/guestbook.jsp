@@ -29,8 +29,7 @@
 <script	src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
 <script>
  $(document).ready(function(){
-	 $("form").submit(function(event){
-		 
+	 $("form").submit(function(event){		 
 	     var errorCount=0;
 	     var name = $("#name").val().trim();	    	
 	     if(!name){
@@ -43,6 +42,14 @@
 	    	window.location = orgUrl; 
 	     });
 	     return false;
+	 });
+	 
+	 // fill time table
+	 var times = ["5:30", "5:50", "6:10", "6:30", "6:50", "7:10", "7:30", "7:50", "8:10", "8:30", "8:50"];
+	 var combo = $("#lessonTime");
+	 $.each(times, function(index, data){
+		 console.log(data);
+		combo.append($("<option>", {value:data, text:data})); 
 	 });
  });
  $(document).ready(function(){
@@ -72,13 +79,10 @@
 		</div>
 		<!-- /header -->
 
-		<div data-role="content">
-            <div class="ui-bar ui-bar-c">
+		<div data-role="content">            
 			<ul data-role="listview" id="timetable">			
-				<!-- <li><h3>darren, andrew</h3><p class="ui-li-aside"><strong>6:30</strong></p> -->
-				</li>					
-			</ul>
-            </div>
+				<!-- <li><h3>darren, andrew</h3><p class="ui-li-aside"><strong>6:30</strong></p> </li>-->				
+			</ul>            
             
             <br> <br>			
             <div class="ui-bar ui-bar-b">

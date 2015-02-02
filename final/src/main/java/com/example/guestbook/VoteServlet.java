@@ -27,6 +27,7 @@ public class VoteServlet extends HttpServlet {
 	public static final String KIND = "vote";
     public static final String ENTITY_KEY = "json";
     public static final String PARAM_DATE = "date";
+    public static final String URL_REDIRECT = "/guestbook.jsp";
     
     public static Logger sLogger = Logger.getLogger("VoteServlet");
     private static Gson sGson = new Gson();    
@@ -62,7 +63,7 @@ public class VoteServlet extends HttpServlet {
         String userName = req.getParameter("name");
         if(userName==null){
         	sLogger.info("name null");
-        	resp.sendRedirect("/status.jsp");
+        	resp.sendRedirect(URL_REDIRECT);
         	return;
         }
 
@@ -76,7 +77,7 @@ public class VoteServlet extends HttpServlet {
         String timeslot = req.getParameter("lessonTime");
         if (timeslot==null){
         	sLogger.info("lessonTime null");
-            resp.sendRedirect("/status.jsp");
+            resp.sendRedirect(URL_REDIRECT);
             return;
         }        
 
@@ -121,7 +122,7 @@ public class VoteServlet extends HttpServlet {
 			sLogger.info("added: " + jsonString);     
 		}        
 
-        resp.sendRedirect("/guestbook.jsp");
+        resp.sendRedirect(URL_REDIRECT);
     }
 }
 //[END all]
