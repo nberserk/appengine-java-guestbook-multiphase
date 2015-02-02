@@ -25,6 +25,7 @@ public class TimeTable {
 			return time;
 		}
 	}	
+	// to TreeeSet
 	ArrayList<TimeSlot> slots=new ArrayList<TimeSlot>();
 	
 	public ArrayList<TimeSlot> getSlots() {

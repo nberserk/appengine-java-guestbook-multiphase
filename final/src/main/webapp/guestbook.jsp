@@ -22,74 +22,93 @@
 <!DOCTYPE html> 
 <html>
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+	<meta charset="utf-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<script	src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+<script>
+ $(document).ready(function(){
+	 $("form").submit(function(event){
+		 
+	     var errorCount=0;
+	     var name = $("#name").val().trim();	    	
+	     if(!name){
+	    	 $("#popupDialog").popup("open");
+	    	 return false;
+	     }
+	     
+	     var orgUrl =  window.location.href;
+	     $.post("/vote", $( "form" ).serialize(), function(){
+	    	window.location = orgUrl; 
+	     });
+	     return false;
+	 });
+ });
+ $(document).ready(function(){
+	 $.getJSON("/table", function(tt){	
+		 var list = $("#timetable");
+		 console.log(tt.slots);
+		 $.each(tt.slots, function(index, data){
+			 list.append($('<li>').append( 
+					 $('<h3>').text(data.voter)).append( 
+							 $('<p>', {class:"ui-li-aside"}).append(
+									 $('<strong>').text(data.time)
+							 )							
+					 )
+			 );
+		 });	
+		$("#timetable").listview("refresh");
+		});
+	});
+</script>
 </head>
 
 <body>
 
-<%
-    String desiredDate = request.getParameter("date");
-    if (desiredDate == null) {
-        SimpleDateFormat sd = new SimpleDateFormat("yyMMdd");
-        Date now = new Date();
-        desiredDate = sd.format(now);
-    }
-    //pageContext.setAttribute("guestbookName", guestbookName);
-    //UserService userService = UserServiceFactory.getUserService();
-    //User user = userService.getCurrentUser();
-    //if (user != null) {
-    //    pageContext.setAttribute("user", user);        
-%>
+<div data-role="page" id="home">
+		<div data-role="header">
+			<h1>탁구 레슨 시간표</h1>
+		</div>
+		<!-- /header -->
 
-<%-- <p>Hello, ${fn:escapeXml(user.nickname)}! (You can
-    <a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
-<%
-    } else {
-%>
-<p>Hello!
-    <a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a>
-    to include your name with greetings you post.</p>
-<%
-    }
-%> --%>
+		<div data-role="content">
+            <div class="ui-bar ui-bar-c">
+			<ul data-role="listview" id="timetable">			
+				<!-- <li><h3>darren, andrew</h3><p class="ui-li-aside"><strong>6:30</strong></p> -->
+				</li>					
+			</ul>
+            </div>
+            
+            <br> <br>			
+            <div class="ui-bar ui-bar-b">
+			<form action="/vote" method="post" id="form" data-theme="b">
+				<label for="lessonTime" class="select">시간 :</label>
+                <select name="lessonTime" id="lessonTime" data-native-menu="false">
+							<option value="5:30">5:30</option>
+							<option value="5:50">5:50</option>
+							<option value="6:10">6:10</option>
+				</select>
+                <input type="text" name="name" id="name" value="" placeholder="이름" /> 
+				<input type="submit" value="투표" />
+	        </form>            
+			</div>
+		</div>		<!-- /content -->
+		<div data-role="popup" id="popupDialog" data-overlay-theme="a" data-theme="c" style="max-width:400px;" class="ui-corner-all">
+				<div data-role="header" data-theme="a" class="ui-corner-top">
+					<h1>이름</h1>
+				</div>
+				<div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+					<h3 class="ui-title">이름을 입력하세요.</h3>					
+					<a href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c">확인</a>					
+				</div>
+		</div> <!-- popup -->
+			
+		<div data-role="footer" data-id="foo1" data-position="fixed"></div>
+		<!-- /footer -->
 
-
-<%
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Key key = KeyFactory.createKey("vote", desiredDate);
-    
-    try{
-    	Entity entity = datastore.get(key);
-		Gson gson = new Gson();
-		TimeTable tt = gson.fromJson((String) entity.getProperty("json"), TimeTable.class);        
-        for (TimeSlot ts : tt.getSlots()) {            
-            pageContext.setAttribute("voteTime", ts.getTime());
-            pageContext.setAttribute("voter", ts.getVoter().toString());
-%>
-            <p>${fn:escapeXml(voteTime)}</b> : ${fn:escapeXml(voter)}</p>
-<% 
-        }
-    } catch (EntityNotFoundException e) {
-    	
-    }    
-%>
-
-<form action="/vote" method="post">
-    <select name="time">
-        <option value="0"> 예비  </option>
-        <option value="5:30"> 5:30  </option>
-        <option value="5:50"> 5:50  </option>
-        <option value="6:10"> 6:10  </option>
-        <option value="6:30"> 6:30  </option>
-        <option value="6:50"> 6:50  </option>
-        <option value="7:10"> 7:10  </option>
-    </select>
-    <input type="text" name="name"/>
-    <input type="submit" value="투표" onclick="checkInput()"/>    
-</form>
+	</div>
+	<!-- /page -->
 
 
 </body>

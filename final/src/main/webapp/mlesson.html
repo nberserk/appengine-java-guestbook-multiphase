@@ -18,7 +18,27 @@
 	     }	    		
 	     $(this)[0].submit();	        
 	 });
+	 
+
+	
  });
+ 
+ $(document).ready(function(){
+	 $.getJSON("http://localhost:8080/table", function(tt){	
+		 var list = $("#timetable");
+		 console.log(tt.slots);
+		 $.each(tt.slots, function(index, data){
+			 list.append($('<li>').append( 
+					 $('<h3>').text(data.voter)).append( 
+							 $('<p>', {class:"ui-li-aside"}).append(
+									 $('<strong>').text(data.time)
+							 )							
+					 )
+			 );
+		 });	
+		$("#timetable").listview("refresh");
+		});
+	});
 </script>
 </head>
 <body>
@@ -30,15 +50,13 @@
 
 		<div data-role="content">
             <div class="ui-bar ui-bar-c">
-			<ul data-role="listview" id="timetable">
-				<li>5:30 ; 하대성 </li>
-				<li><a href="audi.html">Audi</a></li>
-				<li><a href="bmw.html">BMW</a></li>
+			<ul data-role="listview" id="timetable">			
+				<!-- <li><h3>darren, andrew</h3><p class="ui-li-aside"><strong>6:30</strong></p> -->
+				</li>					
 			</ul>
             </div>
             
             <br> <br>			
-
             <div class="ui-bar ui-bar-b">
 			<form action="/vote" method="post" id="form" data-theme="b">
 				<label for="select-choice-a" class="select">시간 :</label>
