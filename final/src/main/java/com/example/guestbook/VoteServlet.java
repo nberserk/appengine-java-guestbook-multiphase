@@ -37,7 +37,8 @@ public class VoteServlet extends HttpServlet {
     public static String getTodayDate(){
     	Date now = new Date();
         SimpleDateFormat sd = new SimpleDateFormat("yyMMdd");
-        sd.setTimeZone(TimeZone.getTimeZone("asia/seoul"));
+        TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
+        sd.setTimeZone(tz);
         return sd.format(now);
     }
     
