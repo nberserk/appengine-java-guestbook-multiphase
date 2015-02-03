@@ -2,9 +2,11 @@ package com.example.guestbook;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class TimeTable {
-	static public class TimeSlot{
+	static public class TimeSlot implements Comparable<TimeSlot>{
 		String time;
 		ArrayList<String> voter = new ArrayList<String>();
 		TimeSlot(){}
@@ -24,11 +26,30 @@ public class TimeTable {
 		public String getTime(){
 			return time;
 		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(obj instanceof TimeSlot){
+				TimeSlot o = (TimeSlot)obj;
+				return time.equals(o.getTime());
+			}
+			return false;
+		}
+		
+		@Override
+		public int hashCode() {			
+			return time.hashCode();
+		}
+		
+		@Override
+		public int compareTo(TimeSlot o) {
+			return time.compareTo(o.getTime());
+		}
 	}	
 	// to TreeeSet
-	ArrayList<TimeSlot> slots=new ArrayList<TimeSlot>();
+	TreeSet<TimeSlot> slots=new TreeSet<TimeSlot>();
 	
-	public ArrayList<TimeSlot> getSlots() {
+	public Set<TimeSlot> getSlots() {
 		return slots;
 	}	
 		

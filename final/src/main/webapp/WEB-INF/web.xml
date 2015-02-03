@@ -9,11 +9,7 @@
     <servlet>
         <servlet-name>table</servlet-name>
         <servlet-class>com.example.guestbook.TableServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>guestbook</servlet-name>
-        <servlet-class>com.example.guestbook.GuestbookServlet</servlet-class>
-    </servlet>
+    </servlet>    
     <servlet-mapping>
         <servlet-name>vote</servlet-name>
         <url-pattern>/vote</url-pattern>
@@ -21,12 +17,8 @@
     <servlet-mapping>
         <servlet-name>table</servlet-name>
         <url-pattern>/table</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>guestbook</servlet-name>
-        <url-pattern>/guestbook</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>    
     <welcome-file-list>
-        <welcome-file>guestbook.jsp</welcome-file>
+        <welcome-file>lesson.html</welcome-file>
     </welcome-file-list>
 </web-app>

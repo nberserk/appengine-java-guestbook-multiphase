@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -27,14 +29,15 @@ public class VoteServlet extends HttpServlet {
 	public static final String KIND = "vote";
     public static final String ENTITY_KEY = "json";
     public static final String PARAM_DATE = "date";
-    public static final String URL_REDIRECT = "/guestbook.jsp";
+    public static final String URL_REDIRECT = "/lesson.html";
     
     public static Logger sLogger = Logger.getLogger("VoteServlet");
     private static Gson sGson = new Gson();    
     
     public static String getTodayDate(){
     	Date now = new Date();
-        SimpleDateFormat sd = new SimpleDateFormat("yyMMdd");        
+        SimpleDateFormat sd = new SimpleDateFormat("yyMMdd");
+        sd.setTimeZone(TimeZone.getTimeZone("asia/seoul"));
         return sd.format(now);
     }
     
@@ -88,7 +91,7 @@ public class VoteServlet extends HttpServlet {
 			Entity entity = ds.get(key);
 			TimeTable tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TimeTable.class);
 			// remove if already voted
-			ArrayList<TimeSlot> tss = tt.getSlots();
+			Set<TimeSlot> tss = tt.getSlots();
 			for (TimeSlot t : tss) {
 				if (t.getVoter().contains(userName)){
 					t.getVoter().remove(userName);
