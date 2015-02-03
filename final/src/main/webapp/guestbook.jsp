@@ -45,12 +45,13 @@
 	 });
 	 
 	 // fill time table
-	 var times = ["5:30", "5:50", "6:10", "6:30", "6:50", "7:10", "7:30", "7:50", "8:10", "8:30", "8:50"];
+	 var times = ["예비", "5:30", "5:50", "6:10", "6:30", "6:50", "7:10", "7:30", "7:50", "8:10", "8:30", "8:50"];
 	 var combo = $("#lessonTime");
 	 $.each(times, function(index, data){
 		 console.log(data);
 		combo.append($("<option>", {value:data, text:data})); 
 	 });
+     combo.selectmenu("refresh", true);
  });
  $(document).ready(function(){
 	 $.getJSON("/table", function(tt){	
@@ -79,7 +80,8 @@
 		</div>
 		<!-- /header -->
 
-		<div data-role="content">            
+		<div data-role="content">
+            <label for="timetable" class="listview">현재 상황:</label>
 			<ul data-role="listview" id="timetable">			
 				<!-- <li><h3>darren, andrew</h3><p class="ui-li-aside"><strong>6:30</strong></p> </li>-->				
 			</ul>            
@@ -87,14 +89,20 @@
             <br> <br>			
             <div class="ui-bar ui-bar-b">
 			<form action="/vote" method="post" id="form" data-theme="b">
-				<label for="lessonTime" class="select">시간 :</label>
-                <select name="lessonTime" id="lessonTime" data-native-menu="false">
-							<option value="5:30">5:30</option>
-							<option value="5:50">5:50</option>
-							<option value="6:10">6:10</option>
-				</select>
-                <input type="text" name="name" id="name" value="" placeholder="이름" /> 
-				<input type="submit" value="투표" />
+				<ul data-role="listview">
+					<li data-role="fieldcontain">
+					<label for="lessonTime" class="select">시간 :</label>
+	                <select name="lessonTime" id="lessonTime" data-native-menu="false">							
+					</select>
+					</li>
+					<li data-role="fieldcontain">
+						<label for="name">이 름 : </label>
+						<input type="text" name="name" id="name" value="" placeholder="이름" /> 
+					</li>
+					<li>
+						<input type="submit" value="투표하기" />					
+					</li>					
+				</ul>
 	        </form>            
 			</div>
 		</div>		<!-- /content -->
