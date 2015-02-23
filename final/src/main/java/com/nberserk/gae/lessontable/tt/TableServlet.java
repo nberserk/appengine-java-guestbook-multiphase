@@ -1,4 +1,4 @@
-package com.example.guestbook;
+package com.nberserk.gae.lessontable.tt;
 
 import java.io.IOException;
 

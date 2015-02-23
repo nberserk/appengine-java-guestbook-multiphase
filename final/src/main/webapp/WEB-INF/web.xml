@@ -4,11 +4,11 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <servlet>
         <servlet-name>vote</servlet-name>
-        <servlet-class>com.example.guestbook.VoteServlet</servlet-class>
+        <servlet-class>com.nberserk.gae.lessontable.tt.VoteServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>table</servlet-name>
-        <servlet-class>com.example.guestbook.TableServlet</servlet-class>
+        <servlet-class>com.nberserk.gae.lessontable.tt.TableServlet</servlet-class>
     </servlet>    
     <servlet-mapping>
         <servlet-name>vote</servlet-name>
