@@ -1,4 +1,4 @@
-package com.nberserk.gae.lessontable.tt;
+package com.nberserk.gae.lessontable.tennis;
 
 import java.io.IOException;
 

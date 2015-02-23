@@ -1,4 +1,4 @@
-package com.nberserk.gae.lessontable.tt;
+package com.nberserk.gae.lessontable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ public class TimeTable {
 	static public class TimeSlot implements Comparable<TimeSlot>{
 		String time;
 		ArrayList<String> voter = new ArrayList<String>();
-		TimeSlot(){}
-		TimeSlot(String time, String name){
+		public TimeSlot(){}
+		public TimeSlot(String time, String name){
 			this.time = time;
 			voter.add(name);
 		}
@@ -49,6 +49,7 @@ public class TimeTable {
 	// to TreeeSet
 	TreeSet<TimeSlot> slots=new TreeSet<TimeSlot>();
 	
+	public TimeTable(){}
 	public Set<TimeSlot> getSlots() {
 		return slots;
 	}	

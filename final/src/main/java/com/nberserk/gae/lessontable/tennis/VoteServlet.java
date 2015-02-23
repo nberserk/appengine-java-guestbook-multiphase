@@ -1,5 +1,5 @@
 
-package com.nberserk.gae.lessontable.tt;
+package com.nberserk.gae.lessontable.tennis;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -22,18 +22,19 @@ import com.nberserk.gae.lessontable.Common;
 import com.nberserk.gae.lessontable.TimeTable;
 import com.nberserk.gae.lessontable.TimeTable.TimeSlot;
 
-public class VoteServlet extends HttpServlet {    
-	private static final long serialVersionUID = 1435452240677102479L;
-	public static final String KIND = "vote";
+public class VoteServlet extends HttpServlet {	
+	private static final long serialVersionUID = -7139861581374794024L;
+	public static final String KIND = "tennisVote";
     public static final String ENTITY_KEY = "json";
     public static final String PARAM_DATE = "date";
-    public static final String URL_REDIRECT = "/lesson.html";    
-
+    public static final String URL_REDIRECT = "/weeklylesson.html";
+    
+    
     private static Gson sGson = new Gson();    
     
     public static String getTodayDate(){
     	Date now = new Date();
-        SimpleDateFormat sd = new SimpleDateFormat("yyMMdd");
+        SimpleDateFormat sd = new SimpleDateFormat("yyww");
         TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
         sd.setTimeZone(tz);
         return sd.format(now);
@@ -41,7 +42,7 @@ public class VoteServlet extends HttpServlet {
     
     /**
      * 
-     * @param date : 050202 
+     * @param date : 0508 , yyww
      * @return null if not found
      */
     public static TimeTable getTimeTable(String date){
@@ -126,4 +127,3 @@ public class VoteServlet extends HttpServlet {
         resp.sendRedirect(URL_REDIRECT);
     }
 }
-//[END all]
