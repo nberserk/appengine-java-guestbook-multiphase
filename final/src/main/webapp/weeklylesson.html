@@ -1,16 +1,17 @@
 <!DOCTYPE html> 
 <html>
 <head>
-	<meta charset="utf-8"> 
+<meta charset="utf-8"> 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+<link rel="stylesheet" href="stylesheets/main.css" />
 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 <script	src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+
 <script>
 	Date.prototype.getWeek = function() {
 		var onejan = new Date(this.getFullYear(), 0, 1);
-		return Math
-				.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+		return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
 	}
 	function startAndEndOfWeek(date) {
 		// If no date object supplied, use current date
@@ -73,25 +74,25 @@
 		var r = startAndEndOfWeek(now);
 		var t = now.getWeek() + ': ' + r[0].toLocaleDateString() + ' - ' + r[1].toLocaleDateString();
 		console.log(t);
-		$("#headerTitle").append(t);		
+		$("#headerTitle").append(t);
+		
+		$.getJSON("/table", function(tt) {
+			var list = $("#timetable");
+			console.log(tt.slots);
+			$.each(tt.slots, function(index, data) {
+				var splited = data.time.split("/");
+				list.append($('<li>')
+						.append($('<h3>').text(splited[1]))
+						.append($('<p>').text(data.voter)));
+			});
+			$("#timetable").listview("refresh");
+		});
+
 	});
 
-	$(document).ready(
-			function() {
-				$.getJSON("/table", function(tt) {
-					var list = $("#timetable");
-					console.log(tt.slots);
-					$.each(tt.slots, function(index, data) {
-						var splited = data.time.split("/");
-						list.append($('<li>')
-								.append($('<h3>').text(data.voter))
-								.append($('<p>', {
-									class : "ui-li-aside"
-								}).append($('<strong>').text(splited[1]))));
-					});
-					$("#timetable").listview("refresh");
-				});
-			});
+	
+	
+	
 </script>
 </head>
 
@@ -99,36 +100,38 @@
 
 <div data-role="page" id="home">
 		<div data-role="header" id="header">
-			<h1 >레슨 시간표 <i id="headerTitle">W</i></h1>
+			<h1 >레슨 시간표</h1>
 		</div>
 		<!-- /header -->
 
 		<div data-role="content">					
-					<ul data-role="listview" id="timetable">
-						<li data-role="list-divider">현재 상황: </li>			
-						<!-- <li><h3>darren, andrew</h3><p class="ui-li-aside"><strong>6:30</strong></p> </li>-->				
-					</ul>				
+					<ul data-role="listview" id="timetable">						
+						<li data-role="list-divider" id="headerTitle">현재 상황; W</li>			
+						<!-- <li><h3>darren, andrew</h3><p class="ui-li-aside"><strong>6:30</strong></p> </li>-->
+						
+					</ul>					
 					<br><br>
 					<div class="ui-bar ui-bar-b">
 					<form action="/vote" method="post" id="form" data-theme="b">
-						<input type="hidden" name="iscancel" id="iscancel"/>
+						<input type="hidden" name="iscancel" id="iscancel"/>						
 						<ul data-role="listview">
+							<li data-role="fieldcontain">
+								<label for="name">이 름 : </label>
+								<input type="text" name="name" id="name" value="" placeholder="이 름" /> 
+							</li>
 							<li data-role="fieldcontain">
 							<label for="lessonTime" class="select">시 간 :</label>
 			                <select name="lessonTime" id="lessonTime" data-native-menu="false">							
 							</select>
 							</li>
-							<li data-role="fieldcontain">
-								<label for="name">이 름 : </label>
-								<input type="text" name="name" id="name" value="" placeholder="이 름" /> 
-							</li>
+							
 							<li>								
 								<input type="submit" value="투표하기" id="submit" />								
 							</li>
 							<li>
 								<input type="submit" value="취소하기" id="cancel"/>					
 							</li>					
-						</ul>
+						</ul>						
 			        </form>
 			        </div>
 			
