@@ -30,12 +30,15 @@
 
 		// Return array of date objects
 		return [ monday, sunday ];
-	}
-
-	
-	
+	}	
 	
 	$(document).ready(function() {
+		$("#submit").click(function(){
+			$("#iscancel").val(0);
+		});
+		$("#cancel").click(function(){
+			$("#iscancel").val(1);
+		});
 		$("form").submit(function(event) {
 			var errorCount = 0;
 			var name = $("#name").val().trim();
@@ -52,7 +55,7 @@
 		});
 
 		// fill time table
-		var times = [ "1/월요일", "2/화요일", "3/수요일", "4/목요일", "5/금요일", "6/토요일" ];
+		var times = [ "1/월요일", "2/화요일", "3/수요일", "4/목요일", "5/금요일" ];
 		var combo = $("#lessonTime");
 		$.each(times, function(index, data) {
 			//console.log(data);
@@ -108,6 +111,7 @@
 					<br><br>
 					<div class="ui-bar ui-bar-b">
 					<form action="/vote" method="post" id="form" data-theme="b">
+						<input type="hidden" name="iscancel" id="iscancel"/>
 						<ul data-role="listview">
 							<li data-role="fieldcontain">
 							<label for="lessonTime" class="select">시 간 :</label>
@@ -118,8 +122,11 @@
 								<label for="name">이 름 : </label>
 								<input type="text" name="name" id="name" value="" placeholder="이 름" /> 
 							</li>
+							<li>								
+								<input type="submit" value="투표하기" id="submit" />								
+							</li>
 							<li>
-								<input type="submit" value="투표하기" />					
+								<input type="submit" value="취소하기" id="cancel"/>					
 							</li>					
 						</ul>
 			        </form>

@@ -10,9 +10,17 @@
 
 <script>
 $(document).ready(function(){
+	$("#apply").click(function(){
+		$("#iscancel").val(0);
+	});
+	$("#cancel").click(function(){
+		$("#iscancel").val(1);
+	});
 	$("#form").on('submit', function(){
 		var errorCount=0;
 	    var name = $("#name").val().trim();	    	
+	    var v = $("#iscancel").val();
+	    console.log(v);
 	    if(!name){
 			//alert("이름을 입력하세요!")
 	   		$("#popupDialog").popup("open");
@@ -82,7 +90,9 @@ $(document).ready(function(){
 						<input type="text" name="name" id="name" value="" placeholder="이름" /> 
 					</li>
 					<li data-role="fieldcontain">
-						<input type="submit" value="투표하기" />
+						<input type="hidden" id="iscancel"/>
+						<input type="submit" value="투표하기" id="apply" />
+						<input type="submit" value="cancel" id="cancel"/>		
 					</li>				
 				</ul>
 	        </form>            

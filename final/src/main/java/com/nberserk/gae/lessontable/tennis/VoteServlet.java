@@ -81,47 +81,53 @@ public class VoteServlet extends HttpServlet {
         	Common.info("lessonTime null");
             resp.sendRedirect(URL_REDIRECT);
             return;
-        }        
+        }
+        
+        boolean isRemove = req.getParameter("iscancel").equals("1");
+        Common.info("iscancel is " + isRemove);
 
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Key key = KeyFactory.createKey(KIND, desiredDate);
-        
+        Key key = KeyFactory.createKey(KIND, desiredDate);        
         try {
 			Entity entity = ds.get(key);
 			TimeTable tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TimeTable.class);
-			// remove if already voted
 			Set<TimeSlot> tss = tt.getSlots();
-			for (TimeSlot t : tss) {
-				if (t.getVoter().contains(userName)){
-					t.getVoter().remove(userName);
-					if(t.getVoter().size()==0){
-						Common.info(t.getTime() + " is removed");
-						tss.remove(t);
+			if(isRemove){
+				for (TimeSlot t : tss) {
+					if (t.getVoter().contains(userName)){
+						t.getVoter().remove(userName);
+						if(t.getVoter().size()==0){
+							Common.info(t.getTime() + " is removed");
+							tss.remove(t);
+						}
+						break;
 					}
-					break;
-				}
-			}
-			
-			TimeSlot ts = tt.getSlot(timeslot);
-			if (ts==null){
-				ts = new TimeSlot(timeslot, userName);
-				tt.addSlot(ts);
+				}	
 			}else{
-				ts.addVoter(userName);
-			}
+				TimeSlot ts = tt.getSlot(timeslot);
+				if (ts==null){
+					ts = new TimeSlot(timeslot, userName);
+					tt.addSlot(ts);
+				}else{
+					ts.addVoter(userName);
+				}	
+			}			
 			
 			String jsonString = sGson.toJson(tt);
 			entity.setProperty(ENTITY_KEY, jsonString);
-			ds.put(entity);
+			ds.put(entity); // TODO, put when changes 
 			Common.info("updated: " + jsonString);
 		} catch (EntityNotFoundException e) {
-			Entity entity = new Entity(KIND, desiredDate);
-			TimeTable tt = new TimeTable();
-			tt.getSlots().add(new TimeSlot(timeslot, userName));
-			String jsonString = sGson.toJson(tt);
-			entity.setProperty(ENTITY_KEY, jsonString);
-			ds.put(entity);
-			Common.info("added: " + jsonString);     
+			Common.info("entity not found for "+desiredDate);
+			if(isRemove==false){
+				Entity entity = new Entity(KIND, desiredDate);
+				TimeTable tt = new TimeTable();
+				tt.getSlots().add(new TimeSlot(timeslot, userName));
+				String jsonString = sGson.toJson(tt);
+				entity.setProperty(ENTITY_KEY, jsonString);
+				ds.put(entity);
+				Common.info("added: " + jsonString);	
+			}			     
 		}        
 
         resp.sendRedirect(URL_REDIRECT);
