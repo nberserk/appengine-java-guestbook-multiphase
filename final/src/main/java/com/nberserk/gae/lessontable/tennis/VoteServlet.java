@@ -4,7 +4,6 @@ package com.nberserk.gae.lessontable.tennis;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Set;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServlet;
@@ -34,10 +33,14 @@ public class VoteServlet extends HttpServlet {
     
     public static String getTodayDate(){
     	Date now = new Date();
+		// change week every Friday noon
+		now.setTime((long) (now.getTime() + 1000 * 60 * 60 * 24 * 2.5));
         SimpleDateFormat sd = new SimpleDateFormat("yyww");
         TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
         sd.setTimeZone(tz);
-        return sd.format(now);
+		String r = sd.format(now);
+		Common.info(" Today is:" + now.toString() + " " + r);
+		return r;
     }
     
     /**
@@ -90,19 +93,16 @@ public class VoteServlet extends HttpServlet {
         Key key = KeyFactory.createKey(KIND, desiredDate);        
         try {
 			Entity entity = ds.get(key);
-			TimeTable tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TimeTable.class);
-			Set<TimeSlot> tss = tt.getSlots();
+			TimeTable tt = sGson.fromJson(
+					(String) entity.getProperty(ENTITY_KEY), TimeTable.class);
 			if(isRemove){
-				for (TimeSlot t : tss) {
-					if (t.getVoter().contains(userName)){
-						t.getVoter().remove(userName);
-						if(t.getVoter().size()==0){
-							Common.info(t.getTime() + " is removed");
-							tss.remove(t);
-						}
-						break;
-					}
-				}	
+				TimeSlot ts = tt.getSlot(timeslot);
+				if (ts.getVoter().contains(userName)) {
+					ts.getVoter().remove(userName);
+					Common.info(ts.getTime() + " is removed");
+				} else {
+					Common.info(ts.getTime() + "doesn't have " + userName);
+				}
 			}else{
 				TimeSlot ts = tt.getSlot(timeslot);
 				if (ts==null){

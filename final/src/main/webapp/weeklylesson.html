@@ -71,8 +71,10 @@
 		
 		// fill current week info
 		var now = new Date();
+		now.setTime(now.getTime()+86400000*2.5);		
 		var r = startAndEndOfWeek(now);
 		var t = now.getWeek() + ': ' + r[0].toLocaleDateString() + ' - ' + r[1].toLocaleDateString();
+		console.log(now.to)
 		console.log(t);
 		$("#headerTitle").append(t);
 		
@@ -100,7 +102,7 @@
 
 <div data-role="page" id="home">
 		<div data-role="header" id="header">
-			<h1 >레슨 시간표</h1>
+			<h1 >동학산 새벽벙개:6시-7시30분 </h1>
 		</div>
 		<!-- /header -->
 

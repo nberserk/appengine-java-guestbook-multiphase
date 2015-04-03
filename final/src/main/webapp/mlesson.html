@@ -36,6 +36,11 @@ $(document).ready(function(){
 		$('<option>', {text:data, value:data}).appendTo(combo); 
 	});
 	combo.selectmenu("refresh", true);
+	
+	var now = new Date();
+	now.setTime(now.getTime()+86400000*2.5);	
+	console.log(now.toLocaleString());
+	
 });
 
  
