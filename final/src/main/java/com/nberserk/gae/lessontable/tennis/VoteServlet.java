@@ -34,7 +34,7 @@ public class VoteServlet extends HttpServlet {
     public static String getTodayDate(){
     	Date now = new Date();
 		// change week every Friday noon
-		now.setTime((long) (now.getTime() + 1000 * 60 * 60 * 24 * 2.5));
+		now.setTime((long) (now.getTime() + 1000 * 60 * 60 * 24 * 1.5));
         SimpleDateFormat sd = new SimpleDateFormat("yyww");
         TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
         sd.setTimeZone(tz);

@@ -71,10 +71,10 @@
 		
 		// fill current week info
 		var now = new Date();
-		now.setTime(now.getTime()+86400000*2.5);		
+		now.setTime(now.getTime()+86400000*1.5);		
 		var r = startAndEndOfWeek(now);
 		var t = now.getWeek() + ': ' + r[0].toLocaleDateString() + ' - ' + r[1].toLocaleDateString();
-		console.log(now.to)
+		console.log(now)
 		console.log(t);
 		$("#headerTitle").append(t);
 		
