@@ -1,26 +1,17 @@
 
 package com.nberserk.gae.lessontable.tt;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Set;
-import java.util.TimeZone;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.nberserk.gae.lessontable.Common;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.repackaged.com.google.gson.Gson;
-import com.nberserk.gae.lessontable.Common;
-import com.nberserk.gae.lessontable.TimeTable;
-import com.nberserk.gae.lessontable.TimeTable.TimeSlot;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class VoteServlet extends HttpServlet {    
 	private static final long serialVersionUID = 1435452240677102479L;
@@ -31,9 +22,9 @@ public class VoteServlet extends HttpServlet {
 
     private static Gson sGson = new Gson();    
     
-    public static String getTodayDate(){
+    public static String getThisWeek(){
     	Date now = new Date();
-        SimpleDateFormat sd = new SimpleDateFormat("yyMMdd");
+        SimpleDateFormat sd = new SimpleDateFormat("yyMM");
         TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
         sd.setTimeZone(tz);
         return sd.format(now);
@@ -44,13 +35,13 @@ public class VoteServlet extends HttpServlet {
      * @param date : 050202 
      * @return null if not found
      */
-    public static TimeTable getTimeTable(String date){
+    public static TTPoll getTimeTable(String date){
     	 DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
          Key key = KeyFactory.createKey(KIND, date);
          
          try {
  			Entity entity = ds.get(key);
- 			TimeTable tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TimeTable.class);
+ 			TTPoll tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TTPoll.class);
  			return tt;
          } catch (EntityNotFoundException e) {
         	 return null;
@@ -67,11 +58,10 @@ public class VoteServlet extends HttpServlet {
         	resp.sendRedirect(URL_REDIRECT);
         	return;
         }
-
         
         String desiredDate = req.getParameter("date");
         if (desiredDate==null){            
-            desiredDate = getTodayDate();
+            desiredDate = getThisWeek();
         }
         Common.info("desiredDate:"+desiredDate);
         
@@ -87,37 +77,22 @@ public class VoteServlet extends HttpServlet {
         
         try {
 			Entity entity = ds.get(key);
-			TimeTable tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TimeTable.class);
-			// remove if already voted
-			Set<TimeSlot> tss = tt.getSlots();
-			for (TimeSlot t : tss) {
-				if (t.getVoter().contains(userName)){
-					t.getVoter().remove(userName);
-					if(t.getVoter().size()==0){
-						Common.info(t.getTime() + " is removed");
-						tss.remove(t);
-					}
-					break;
-				}
-			}
-			
-			TimeSlot ts = tt.getSlot(timeslot);
-			if (ts==null){
-				ts = new TimeSlot(timeslot, userName);
-				tt.addSlot(ts);
-			}else{
-				ts.addVoter(userName);
-			}
-			
+			TTPoll tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TTPoll.class);
+
+            tt.vote(timeslot, userName);
+
 			String jsonString = sGson.toJson(tt);
 			entity.setProperty(ENTITY_KEY, jsonString);
 			ds.put(entity);
 			Common.info("updated: " + jsonString);
 		} catch (EntityNotFoundException e) {
-			Entity entity = new Entity(KIND, desiredDate);
-			TimeTable tt = new TimeTable();
-			tt.getSlots().add(new TimeSlot(timeslot, userName));
+
+            TTPoll tt = new TTPoll();
+			tt.vote(timeslot, userName);
+
 			String jsonString = sGson.toJson(tt);
+
+            Entity entity = new Entity(KIND, desiredDate);
 			entity.setProperty(ENTITY_KEY, jsonString);
 			ds.put(entity);
 			Common.info("added: " + jsonString);     

@@ -1,15 +1,13 @@
 package com.nberserk.gae.lessontable.tt;
 
-import java.io.IOException;
+import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.nberserk.gae.lessontable.Common;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.appengine.repackaged.com.google.gson.Gson;
-import com.nberserk.gae.lessontable.Common;
-import com.nberserk.gae.lessontable.TimeTable;
+import java.io.IOException;
 
 public class TableServlet extends HttpServlet {	
 	private static final long serialVersionUID = -6535578691334962972L;
@@ -22,14 +20,14 @@ public class TableServlet extends HttpServlet {
 		
 		String date = req.getParameter(VoteServlet.PARAM_DATE);
 		if(date==null)
-			date = VoteServlet.getTodayDate();
+			date = VoteServlet.getThisWeek();
 		
 		//response.addHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        TimeTable tt = VoteServlet.getTimeTable(date);
+        TTPoll tt = VoteServlet.getTimeTable(date);
         if (tt==null)
-        	tt = new TimeTable();
+        	tt = new TTPoll();
         String jsonString = sGson.toJson(tt);
         Common.info(jsonString);
         response.getWriter().write(jsonString);		

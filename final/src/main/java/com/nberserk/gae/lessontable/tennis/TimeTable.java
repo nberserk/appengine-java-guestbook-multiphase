@@ -1,4 +1,4 @@
-package com.nberserk.gae.lessontable;
+package com.nberserk.gae.lessontable.tennis;
 
 import java.util.ArrayList;
 import java.util.List;
