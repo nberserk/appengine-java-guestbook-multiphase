@@ -26,14 +26,12 @@ public class TableServlet extends HttpServlet {
 		response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         TTPoll tt = VoteServlet.getTimeTable(date);
-        if (tt==null)
-        	tt = new TTPoll();
+		if(tt==null)
+			tt = new TTPoll();
         String jsonString = sGson.toJson(tt);
-        Common.info(jsonString);
+        Common.info("tt_table: " + jsonString);
         response.getWriter().write(jsonString);		
 	}
 	
-	
-	
 }
-// [END all]
+

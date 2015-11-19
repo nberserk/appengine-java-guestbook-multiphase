@@ -6,14 +6,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class TTPoll {
-    int state = 1; // 1: open, 2:closed
-    public void startPoll() {
-        state = 1;
-    }
-
-    public void endPoll(){
-        state = 0;
-    }
 
     static public class Slot implements Comparable<Slot>{
         String time;
@@ -81,6 +73,29 @@ public class TTPoll {
     TreeSet<Slot> slots = new TreeSet<Slot>();
     boolean lotteryDone;
 
+    int state = 0; //0:preparing,  1: open, 2:closed
+    public void startPoll() {
+        state = 1;
+    }
+    public void endPoll(){
+        for (Slot s : slots) {
+            s.lottery();
+        }
+        state = 2;
+    }
+
+    public boolean canVoteAvailable(){
+        if (state==1)
+            return true;
+        return false;
+    }
+
+    public boolean isPollDone(){
+        if(state==2)
+            return true;
+        return false;
+    }
+
     public TTPoll(){}
     public Set<Slot> getSlots() {
         return slots;
@@ -115,14 +130,5 @@ public class TTPoll {
         }
     }
 
-    public void lottery(){
-        for (Slot s : slots) {
-            s.lottery();
-        }
-        lotteryDone =true;
-    }
 
-    public boolean isLotteryDone(){
-        return lotteryDone;
-    }
 }

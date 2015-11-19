@@ -39,10 +39,10 @@ public class TTPollTest {
         poll.vote(time, andrew);
         poll.vote(time, "rachael");
 
-        assertEquals(false, poll.isLotteryDone());
+        assertEquals(false, poll.isPollDone());
 
-        poll.lottery();
-        assertEquals(true, poll.isLotteryDone());
+        poll.endPoll();
+        assertEquals(true, poll.isPollDone());
 
         assertTrue(poll.getSlot(time).luckyMan != null);
     }

@@ -65,8 +65,8 @@ public class VoteServlet extends HttpServlet {
         }
         Common.info("desiredDate:"+desiredDate);
         
-        String timeslot = req.getParameter("lessonTime");
-        if (timeslot==null){
+        String time = req.getParameter("lessonTime");
+        if (time==null){
         	Common.info("lessonTime null");
             resp.sendRedirect(URL_REDIRECT);
             return;
@@ -79,23 +79,18 @@ public class VoteServlet extends HttpServlet {
 			Entity entity = ds.get(key);
 			TTPoll tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TTPoll.class);
 
-            tt.vote(timeslot, userName);
+            if(tt.canVoteAvailable()){
+                tt.vote(time, userName);
 
-			String jsonString = sGson.toJson(tt);
-			entity.setProperty(ENTITY_KEY, jsonString);
-			ds.put(entity);
-			Common.info("updated: " + jsonString);
+                String jsonString = sGson.toJson(tt);
+                entity.setProperty(ENTITY_KEY, jsonString);
+                ds.put(entity);
+                Common.info("updated: " + jsonString);
+            }else{
+                Common.info("tt_vote ignored: vote not available");
+            }
 		} catch (EntityNotFoundException e) {
-
-            TTPoll tt = new TTPoll();
-			tt.vote(timeslot, userName);
-
-			String jsonString = sGson.toJson(tt);
-
-            Entity entity = new Entity(KIND, desiredDate);
-			entity.setProperty(ENTITY_KEY, jsonString);
-			ds.put(entity);
-			Common.info("added: " + jsonString);     
+            Common.info("tt_vote: entity not found");
 		}        
 
         resp.sendRedirect(URL_REDIRECT);

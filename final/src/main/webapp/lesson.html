@@ -3,9 +3,17 @@
 <head>
 	<meta charset="utf-8"> 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+    
 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-<script	src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+
 <script>
  $(document).ready(function(){
 	 $("form").submit(function(event){		 
@@ -17,7 +25,7 @@
 	     }
 	     
 	     var orgUrl =  window.location.href;
-	     $.post("/vote", $( "form" ).serialize(), function(){
+	     $.post("/tt_vote", $( "form" ).serialize(), function(){
 	    	window.location = orgUrl; 
 	     });
 	     return false;
@@ -34,20 +42,26 @@
 });
  
 $(document).ready(function(){
-	$.getJSON("/table", function(tt){	
-		 var list = $("#timetable");
-		 console.log(tt.slots);
-		 $.each(tt.slots, function(index, data){
-			 list.append($('<li>').append( 
-					 $('<h3>').text(data.voter)).append( 
-							 $('<p>', {class:"ui-li-aside"}).append(
-									 $('<strong>').text(data.time)
-							 )							
-					 )
-			 );
-		 });	
-		$("#timetable").listview("refresh");
-	});
+    $.getJSON("/table", function(tt){	
+        var list = $("#timetable");
+	    console.log(tt);
+	    if(tt.state != 1){
+	        $('input[type="submit"]').val('ddddd')
+            $('input[type="submit"]').prop('disabled', true);
+            console.log("disable vote")
+            //$('input[id=vote]').val("투표 기간이 아닙니다.")
+        }
+	    $.each(tt.slots, function(index, data){
+	        list.append($('<li>').append( 
+		        $('<h3>').text(data.voter)).append( 
+		            $('<p>', {class:"ui-li-aside"}).append(
+			            $('<strong>').text(data.time)
+		            )							
+		        )
+	                   );
+	    });	
+	    $("#timetable").listview("refresh");
+    });
 });
 </script>
 </head>
@@ -79,7 +93,7 @@ $(document).ready(function(){
 								<input type="text" name="name" id="name" value="" placeholder="이 름" /> 
 							</li>
 							<li>
-								<input type="submit" value="투표하기" />					
+								<input type="submit" id="vote" value="투표하기" />
 							</li>					
 						</ul>
 			        </form>
