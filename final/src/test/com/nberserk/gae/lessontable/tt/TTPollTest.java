@@ -46,4 +46,7 @@ public class TTPollTest {
 
         assertTrue(poll.getSlot(time).luckyMan != null);
     }
+
+
+
 }

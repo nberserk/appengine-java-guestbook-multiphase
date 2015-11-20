@@ -32,12 +32,12 @@ public class VoteServlet extends HttpServlet {
     
     /**
      * 
-     * @param date : 050202 
+     * @param week : week
      * @return null if not found
      */
-    public static TTPoll getTimeTable(String date){
+    public static TTPoll getTimeTable(String week){
     	 DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-         Key key = KeyFactory.createKey(KIND, date);
+         Key key = KeyFactory.createKey(KIND, week);
          
          try {
  			Entity entity = ds.get(key);
@@ -46,6 +46,21 @@ public class VoteServlet extends HttpServlet {
          } catch (EntityNotFoundException e) {
         	 return null;
          }         
+    }
+
+    public static void updateTimeTable(String week, TTPoll poll){
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        Key key = KeyFactory.createKey(KIND, week);
+
+        Entity entity = null;
+        try {
+            entity = ds.get(key);
+        } catch (EntityNotFoundException e) {
+            entity = new Entity(VoteServlet.KIND, week);
+        }
+        String jsonString = sGson.toJson(poll);
+        entity.setProperty(VoteServlet.ENTITY_KEY, jsonString);
+        ds.put(entity);
     }
     
     @Override
@@ -59,11 +74,11 @@ public class VoteServlet extends HttpServlet {
         	return;
         }
         
-        String desiredDate = req.getParameter("date");
-        if (desiredDate==null){            
-            desiredDate = getThisWeek();
+        String week = req.getParameter("date");
+        if (week==null){
+            week = getThisWeek();
         }
-        Common.info("desiredDate:"+desiredDate);
+        Common.info("desiredDate:"+week);
         
         String time = req.getParameter("lessonTime");
         if (time==null){
@@ -72,28 +87,21 @@ public class VoteServlet extends HttpServlet {
             return;
         }        
 
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Key key = KeyFactory.createKey(KIND, desiredDate);
-        
-        try {
-			Entity entity = ds.get(key);
-			TTPoll tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TTPoll.class);
+        TTPoll poll = getTimeTable(week);
+        if (poll==null){
+            Common.info("tt_vote: entity not found, strange. when this can be happen?");
+            poll = new TTPoll();
+        }
 
-            if(tt.canVoteAvailable()){
-                tt.vote(time, userName);
-
-                String jsonString = sGson.toJson(tt);
-                entity.setProperty(ENTITY_KEY, jsonString);
-                ds.put(entity);
-                Common.info("updated: " + jsonString);
-            }else{
-                Common.info("tt_vote ignored: vote not available");
-            }
-		} catch (EntityNotFoundException e) {
-            Common.info("tt_vote: entity not found");
-		}        
+        if(poll.canVoteAvailable()){
+            poll.vote(time, userName);
+            updateTimeTable(week, poll);
+            Common.info("updated: " + poll);
+        }else{
+            Common.info("tt_vote ignored: vote not available");
+        }
 
         resp.sendRedirect(URL_REDIRECT);
     }
 }
-//[END all]
+

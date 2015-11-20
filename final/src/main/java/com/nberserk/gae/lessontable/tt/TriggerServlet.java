@@ -1,6 +1,5 @@
 package com.nberserk.gae.lessontable.tt;
 
-import com.google.appengine.api.datastore.*;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.nberserk.gae.lessontable.Common;
 
@@ -27,25 +26,10 @@ public class TriggerServlet extends HttpServlet {
 
         String week = VoteServlet.getThisWeek();
 
-
-
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Key key = KeyFactory.createKey(VoteServlet.KIND, week);
-
-        TTPoll poll = null;
-        Entity entity = null;
-
-        // get entity
-        try {
-            entity = ds.get(key);
-            poll = sGson.fromJson((String) entity.getProperty(VoteServlet.ENTITY_KEY), TTPoll.class);
-        } catch (EntityNotFoundException e) {
+        TTPoll poll = VoteServlet.getTimeTable(week);
+        if(poll==null){
             poll = new TTPoll();
-            entity = new Entity(VoteServlet.KIND, week);
-
-            Common.info("new entity created: " + VoteServlet.ENTITY_KEY + "/"+week);
         }
-
 
         if(cmd.equals("enable")){
             poll.startPoll();
@@ -54,9 +38,7 @@ public class TriggerServlet extends HttpServlet {
         }
 
         String jsonString = sGson.toJson(poll);
-        entity.setProperty(VoteServlet.ENTITY_KEY, jsonString);
-        ds.put(entity);
-
+        VoteServlet.updateTimeTable(week, poll);
         response.getWriter().write(jsonString);
 	}
 	

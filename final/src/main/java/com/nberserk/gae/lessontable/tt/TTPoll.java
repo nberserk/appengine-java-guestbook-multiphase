@@ -1,9 +1,6 @@
 package com.nberserk.gae.lessontable.tt;
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class TTPoll {
 
@@ -12,6 +9,7 @@ public class TTPoll {
         String luckyMan;
         ArrayList<String> voter = new ArrayList<String>();
 
+        public Slot(){}
         public Slot(String time, String name){
             this.time = time;
             voter.add(name);
@@ -68,12 +66,17 @@ public class TTPoll {
         public String getLuckyMan(){
             return luckyMan;
         }
+
+        @Override
+        public String toString() {
+            return "time:" + time + "voter:"+voter.toString() + "luckyMan:"+luckyMan;
+        }
     }
     // to TreeeSet
     TreeSet<Slot> slots = new TreeSet<Slot>();
-    boolean lotteryDone;
 
     int state = 0; //0:preparing,  1: open, 2:closed
+    String dateString;
     public void startPoll() {
         state = 1;
     }
@@ -96,7 +99,21 @@ public class TTPoll {
         return false;
     }
 
-    public TTPoll(){}
+    public static Calendar findTuesDay() {
+        Calendar date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"));
+        int diff = Calendar.TUESDAY - date.get(Calendar.DAY_OF_WEEK);
+//        if (!(diff > 0)) {
+//            diff += 7;
+//        }
+        date.add(Calendar.DAY_OF_MONTH, diff);
+        return date;
+    }
+
+    public TTPoll(){
+        Calendar date = findTuesDay();
+        dateString = String.format("%d년 %d월 %d일 - 레슨시간표.", date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+    }
+
     public Set<Slot> getSlots() {
         return slots;
     }
@@ -130,5 +147,15 @@ public class TTPoll {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("state:" + state +"n");
 
+        for(Slot s: slots){
+            builder.append(s.toString());
+        }
+
+        return builder.toString();
+    }
 }
