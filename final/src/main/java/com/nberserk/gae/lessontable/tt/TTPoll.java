@@ -10,6 +10,9 @@ public class TTPoll {
         ArrayList<String> voter = new ArrayList<String>();
 
         public Slot(){}
+        public Slot(String time){
+            this.time = time;
+        }
         public Slot(String time, String name){
             this.time = time;
             voter.add(name);
@@ -112,6 +115,14 @@ public class TTPoll {
     public TTPoll(){
         Calendar date = findTuesDay();
         dateString = String.format("%d년 %d월 %d일 - 레슨시간표.", date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+
+        // make empty time slot
+        slots.add(new Slot("05:30"));
+        slots.add(new Slot("05:40"));
+        slots.add(new Slot("05:50"));
+        slots.add(new Slot("06:00"));
+        slots.add(new Slot("06:10"));
+        slots.add(new Slot("06:20"));
     }
 
     public Set<Slot> getSlots() {
@@ -131,8 +142,6 @@ public class TTPoll {
         for (Slot s : slots) {
             if (s.isVoted(name)){
                 s.removeVoter(name);
-                if(s.isEmpty())
-                    slots.remove(s);
                 break;
             }
         }
