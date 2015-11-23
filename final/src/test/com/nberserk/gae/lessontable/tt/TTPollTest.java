@@ -2,6 +2,8 @@ package com.nberserk.gae.lessontable.tt;
 
 import org.junit.Test;
 
+import java.util.Random;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -46,6 +48,18 @@ public class TTPollTest {
 
         assertTrue(poll.getSlot(time).luckyMan != null);
     }
+
+    @Test
+    public void randomTest(){
+
+        int size = 4;
+        for (int i = 0; i < 100; i++) {
+            int lucky = new Random().nextInt(size);
+            System.out.println(lucky);
+        }
+
+    }
+
 
 
 

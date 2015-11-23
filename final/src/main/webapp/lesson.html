@@ -15,6 +15,11 @@
 
 
 <script>
+if (typeof console === "undefined"){
+    console={};
+    console.log = function(){};
+}
+
  $(document).ready(function(){
 	 $("#vote").submit(function(event){
 	     if ($('#voteBtn').hasClass('disabled')){
@@ -34,15 +39,6 @@
 	     });
 	     return false;
 	 });
-	 
-	 // fill time table
-	 var times = ["예비", "5:30", "5:40", "5:50", "6:00", "6:10", "6:20", "6:30", "6:40", "6:50", "7:00", "7:10", "7:20", '7:30', '7:40'];
-	 var combo = $("#lessonTime");
-	 $.each(times, function(index, data){
-		 console.log(data);
-		combo.append($("<option>", {value:data, text:data})); 
-	 });
-     //combo.selectmenu("refresh", true);
 });
  
 $(document).ready(function(){
@@ -134,8 +130,23 @@ $(document).ready(function(){
 
             <div class="form-group">
                 <label for="lessonTime" class="col-sm-2 control-label">시 간 :</label>
-                <div class="col-sm-10">
-                    <select name="lessonTime" id="lessonTime" class="btn btn-default col-sm-3">
+                <div class="col-sm-3">
+                    <select name="lessonTime" id="lessonTime" class="form-control">
+                        <option value="예비" selected>예비</option>
+                        <option value="5:30">5:30</option>
+                        <option value="5:40">5:40</option>
+                        <option value="5:50">5:50</option>
+                        <option value="6:00">6:00</option>
+                        <option value="6:10">6:10</option>
+                        <option value="6:20">6:20</option>
+                        <option value="6:30">6:30</option>
+                        <option value="6:40">6:40</option>
+                        <option value="6:50">6:50</option>
+                        <option value="7:00">7:00</option>
+                        <option value="7:10">7:10</option>
+                        <option value="7:20">7:20</option>
+                        <option value="7:30">7:30</option>
+                        <option value="7:40">7:40</option>
                     </select>
                 </div>
             </div>
@@ -160,7 +171,7 @@ $(document).ready(function(){
     <div class="panel-heading">도움말</div>
     <div class="panel-body">
     <ul>
-        <li>취소하시고 싶으시면 시간을 예비로 선택한 후, 투표해주시면 됩니다. </li>
+        <li>취소하시고 싶으시면 시간을 예비로 선택한 후, <b>신청하기</b> 버튼을 누르면 됩니다. </li>
     </ul>
     </div>
 </div>
