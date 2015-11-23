@@ -24,7 +24,7 @@ public class VoteServlet extends HttpServlet {
     
     public static String getThisWeek(){
     	Date now = new Date();
-        SimpleDateFormat sd = new SimpleDateFormat("yyMM");
+        SimpleDateFormat sd = new SimpleDateFormat("yyww");
         TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
         sd.setTimeZone(tz);
         return sd.format(now);
@@ -35,17 +35,18 @@ public class VoteServlet extends HttpServlet {
      * @param week : week
      * @return null if not found
      */
-    public static TTPoll getTimeTable(String week){
-    	 DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-         Key key = KeyFactory.createKey(KIND, week);
-         
-         try {
- 			Entity entity = ds.get(key);
- 			TTPoll tt = sGson.fromJson((String) entity.getProperty(ENTITY_KEY), TTPoll.class);
- 			return tt;
-         } catch (EntityNotFoundException e) {
-        	 return null;
-         }         
+    public static TTPoll getTimeTable(String week) {
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        Key key = KeyFactory.createKey(KIND, week);
+
+        try {
+            Entity entity = ds.get(key);
+            Text text = (Text) entity.getProperty(ENTITY_KEY);
+            TTPoll tt = sGson.fromJson(text.getValue(), TTPoll.class);
+            return tt;
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
     }
 
     public static void updateTimeTable(String week, TTPoll poll){
@@ -59,7 +60,8 @@ public class VoteServlet extends HttpServlet {
             entity = new Entity(VoteServlet.KIND, week);
         }
         String jsonString = sGson.toJson(poll);
-        entity.setProperty(VoteServlet.ENTITY_KEY, jsonString);
+        Text text = new Text(jsonString);
+        entity.setProperty(VoteServlet.ENTITY_KEY, text);
         ds.put(entity);
     }
     

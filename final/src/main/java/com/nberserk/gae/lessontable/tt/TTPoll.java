@@ -3,6 +3,7 @@ package com.nberserk.gae.lessontable.tt;
 import java.util.*;
 
 public class TTPoll {
+    private static String RESERVE = "예비";
 
     static public class Slot implements Comparable<Slot>{
         String time;
@@ -61,7 +62,11 @@ public class TTPoll {
         }
 
         public void lottery() {
+            if(time.equals(RESERVE))
+                return;
             int size = voter.size();
+            if(size==0)
+                return;
             int lucky = new Random().nextInt(size);
             luckyMan = voter.get(lucky);
         }
@@ -117,12 +122,21 @@ public class TTPoll {
         dateString = String.format("%d년 %d월 %d일 - 레슨시간표.", date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
 
         // make empty time slot
-        slots.add(new Slot("05:30"));
-        slots.add(new Slot("05:40"));
-        slots.add(new Slot("05:50"));
-        slots.add(new Slot("06:00"));
-        slots.add(new Slot("06:10"));
-        slots.add(new Slot("06:20"));
+        slots.add(new Slot("5:30"));
+        slots.add(new Slot("5:40"));
+        slots.add(new Slot("5:50"));
+        slots.add(new Slot("6:00"));
+        slots.add(new Slot("6:10"));
+        slots.add(new Slot("6:20"));
+        slots.add(new Slot("6:30"));
+        slots.add(new Slot("6:40"));
+        slots.add(new Slot("6:50"));
+        slots.add(new Slot("7:00"));
+        slots.add(new Slot("7:10"));
+        slots.add(new Slot("7:20"));
+        slots.add(new Slot("7:30"));
+        slots.add(new Slot("7:40"));
+        slots.add(new Slot(RESERVE));
     }
 
     public Set<Slot> getSlots() {

@@ -36,7 +36,7 @@
 	 });
 	 
 	 // fill time table
-	 var times = ["예비", "5:30", "5:50", "6:10", "6:30", "6:50", "7:10", "7:30", "7:50", "8:10", "8:30", "8:50"];
+	 var times = ["예비", "5:30", "5:40", "5:50", "6:00", "6:10", "6:20", "6:30", "6:40", "6:50", "7:00", "7:10", "7:20", '7:30', '7:40'];
 	 var combo = $("#lessonTime");
 	 $.each(times, function(index, data){
 		 console.log(data);
@@ -54,11 +54,12 @@ $(document).ready(function(){
             $('#votePanel').hide();
             $('#voteBtn').addClass('disabled')
             console.log("disable vote")
-            //$('input[id=vote]').val("투표 기간이 아닙니다.")
+            $('#alertMsg').text("지금은 레슨 신청 시간이 아닙니다. 매주 화요일 오전 8시에 투표가 열리고, 오후 3시에 마감이 됩니다. ");
         }else{
             $('#votePanel').show();
             $('#voteBtn').removeClass('disabled')
             console.log("enable vote")
+            $('#alertMsg').text("레슨 신청이 열렸습니다. 신청은 오후 3시에 마감됩니다.");
         }
         var list = $("#timetable");
 	    $.each(tt.slots, function(index, data){
@@ -121,6 +122,10 @@ $(document).ready(function(){
 </div>
 
 
+<div class="alert alert-success" role="alert">
+    <p id="alertMsg"></p>
+</div>
+
 
 <div class="panel panel-default" id="votePanel">
     <div class="panel-heading">레슨 신청 </div>
@@ -142,7 +147,7 @@ $(document).ready(function(){
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary" id="voteBtn"> 투표하기 </button>
+                    <button type="submit" class="btn btn-primary" id="voteBtn"> 신청하기 </button>
                 </div>
             </div>
 
@@ -154,8 +159,10 @@ $(document).ready(function(){
 <div class="panel panel-default">
     <div class="panel-heading">도움말</div>
     <div class="panel-body">
-    매주 화요일 오전 8시에 투표가 열리고, 오후 3시에 마감이 됩니다.
-        </div>
+    <ul>
+        <li>취소하시고 싶으시면 시간을 예비로 선택한 후, 투표해주시면 됩니다. </li>
+    </ul>
+    </div>
 </div>
 
 
