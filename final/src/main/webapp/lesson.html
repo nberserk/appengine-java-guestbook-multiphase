@@ -15,35 +15,64 @@
 
 
 <script>
-if (typeof console === "undefined"){
-    console={};
-    console.log = function(){};
-}
+if (!window.console) window.console={};
+if (!window.console.log) window.console.log = function(){};
 
- $(document).ready(function(){
-	 $("#vote").submit(function(event){
+$(document).ready(function(){
+    $('#alertError').hide();
+
+    showErrorMsg = function(msg){
+        $('#alertError').show();
+        $('#alertErrorMsg').text(msg);
+    };
+
+    updateTable = function(tt){
+        var table = $('#timetable');
+
+        table.find("tr").remove();
+        $.each(tt.slots, function(index, data){
+            console.log(data);
+            var row = $('<tr>');
+	        var col = $('<td>', {text: data.time});
+	        row.append(col)
+	        var col = $('<td>', {id: 'td_'+data.time, text: data.voter});
+	        row.append(col);
+	        var col = $('<td>', {text: data.luckyMan});
+	        row.append(col);
+	        table.append(row);
+        });
+
+    };
+    $("#vote").submit(function(event){
 	     if ($('#voteBtn').hasClass('disabled')){
 	        return false;
 	     }
 	     var errorCount=0;
-	     var name = $("#name").val().trim();
-        console.log(name)
+	     var name = $.trim($("#name").val());
+
 	     if(!name){
 	    	 $("#Modal").modal('show');
 	    	 return false;
 	     }
-	     
-	     var orgUrl =  window.location.href;
-	     $.post("/tt_vote", $( "form" ).serialize(), function(){
-	    	window.location = orgUrl; 
+
+	     console.log(name);
+
+	     $.post("/tt_vote", $( "form" ).serialize(), function(data){
+	        console.log("tt_vote");
+            console.log(data);
+	        //var obj = jQuery.parseJSON(data);
+
+	        updateTable(data);
+	     }).fail( function (xhr, textStatus, errorThrown){
+	        console.log(xhr.status);
+	        console.log(errorThrown);
+	        showErrorMsg(errorThrown);
 	     });
 	     return false;
 	 });
-});
- 
-$(document).ready(function(){
 
     $.getJSON("/tt_table", function(tt){
+        console.log("tt_table");
         console.log(tt);
 
 	    if(tt.state != 1){
@@ -62,7 +91,7 @@ $(document).ready(function(){
 	        var row = $('<tr>');
 	        var col = $('<td>', {text: data.time});
 	        row.append(col)
-	        var col = $('<td>', {text: data.voter});
+	        var col = $('<td>', {id: 'td_'+data.time, text: data.voter});
 	        row.append(col);
 	        var col = $('<td>', {text: data.luckyMan});
 	        row.append(col);
@@ -122,6 +151,11 @@ $(document).ready(function(){
     <p id="alertMsg"></p>
 </div>
 
+<div id="alertError" class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>에러!</strong> <p id="alertErrorMsg"> error msg</p>
+</div>
+
 
 <div class="panel panel-default" id="votePanel">
     <div class="panel-heading">레슨 신청 </div>
@@ -153,7 +187,7 @@ $(document).ready(function(){
             <div class="form-group">
                 <label for="name" class="col-sm-2 control-label">이 름 :</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="이 름">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="이름을 입력하세요">
                 </div>
             </div>
             <div class="form-group">

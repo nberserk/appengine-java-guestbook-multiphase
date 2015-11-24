@@ -119,7 +119,7 @@ public class TTPoll {
 
     public TTPoll(){
         Calendar date = findTuesDay();
-        dateString = String.format("%d년 %d월 %d일 - 레슨시간표.", date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+        dateString = String.format("%d년 %d월 %d일 - 레슨시간표.", date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
 
         // make empty time slot
         slots.add(new Slot("5:30"));

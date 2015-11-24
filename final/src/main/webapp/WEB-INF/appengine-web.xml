@@ -2,7 +2,7 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <application>ttlessontable</application>
     <version>3</version>
-    <threadsafe>true</threadsafe>
+    <threadsafe>false</threadsafe>
     
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>

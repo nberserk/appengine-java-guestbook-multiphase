@@ -49,7 +49,7 @@ public class VoteServlet extends HttpServlet {
         }
     }
 
-    public static void updateTimeTable(String week, TTPoll poll){
+    public static String updateTimeTable(String week, TTPoll poll){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         Key key = KeyFactory.createKey(KIND, week);
 
@@ -63,18 +63,30 @@ public class VoteServlet extends HttpServlet {
         Text text = new Text(jsonString);
         entity.setProperty(VoteServlet.ENTITY_KEY, text);
         ds.put(entity);
+        return jsonString;
     }
     
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp)
+    public void doPost(HttpServletRequest req, HttpServletResponse response)
             throws IOException {
 
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         String userName = req.getParameter("name");
-        if(userName==null){
-        	Common.info("name null");
-        	resp.sendRedirect(URL_REDIRECT);
+        if(userName==null ){
+        	Common.info("name null or too short");
+        	response.sendRedirect(URL_REDIRECT);
         	return;
         }
+
+        userName = userName.trim();
+        if(userName.length() <=0 ){
+            Common.info("full of spaces");
+            response.sendRedirect(URL_REDIRECT);
+            return;
+        }
+
         
         String week = req.getParameter("date");
         if (week==null){
@@ -85,7 +97,7 @@ public class VoteServlet extends HttpServlet {
         String time = req.getParameter("lessonTime");
         if (time==null){
         	Common.info("lessonTime null");
-            resp.sendRedirect(URL_REDIRECT);
+            response.sendRedirect(URL_REDIRECT);
             return;
         }        
 
@@ -97,13 +109,15 @@ public class VoteServlet extends HttpServlet {
 
         if(poll.canVoteAvailable()){
             poll.vote(time, userName);
-            updateTimeTable(week, poll);
-            Common.info("updated: " + poll);
-        }else{
-            Common.info("tt_vote ignored: vote not available");
-        }
+            String json = updateTimeTable(week, poll);
+            Common.info("updated: " + json);
 
-        resp.sendRedirect(URL_REDIRECT);
+            response.getWriter().write(json);
+        }else{
+            Common.info("tt_vote ignored: vote not available.");
+
+            response.sendError(500, "vote not available.");
+        }
     }
 }
 
