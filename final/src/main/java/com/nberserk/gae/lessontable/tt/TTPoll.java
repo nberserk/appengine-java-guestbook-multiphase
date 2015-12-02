@@ -3,7 +3,7 @@ package com.nberserk.gae.lessontable.tt;
 import java.util.*;
 
 public class TTPoll {
-    private static String RESERVE = "예비";
+    private static String RESERVE = "취소";
 
     static public class Slot implements Comparable<Slot>{
         String time;
