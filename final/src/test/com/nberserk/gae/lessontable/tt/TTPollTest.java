@@ -24,7 +24,7 @@ public class TTPollTest {
         assertEquals( true, s.isVoted(darren) );
 
         poll.vote(t2, darren);
-        assertEquals(null, poll.getSlot(time));
+        assertEquals(0, poll.getSlot(time).voter.size());
         assertEquals(true, poll.getSlot(t2).isVoted(darren));
     }
 
@@ -51,11 +51,45 @@ public class TTPollTest {
 
     @Test
     public void randomTest(){
+        Random r = new Random(System.currentTimeMillis());
 
-        int size = 4;
-        for (int i = 0; i < 100; i++) {
-            int lucky = new Random().nextInt(size);
+        int size = 3;
+        for (int i = 0; i < 16; i++) {
+            int lucky = r.nextInt(size);
             System.out.println(lucky);
+        }
+    }
+
+    @Test
+    public void lotteryDistribution(){
+        for (int k = 0; k < 10; k++){
+            TTPoll poll = new TTPoll();
+            int idx = 0;
+            for (TTPoll.Slot s : poll.getSlots()){
+
+                for (int i = 0; i < 2; i++) {
+                    poll.vote(s.getTime(), new Integer(idx).toString());
+                    idx++;
+                }
+            }
+
+            poll.startPoll();
+            poll.endPoll();
+
+            int even = 0;
+            int odd = 0;
+
+            for (TTPoll.Slot s : poll.getSlots()){
+                if (s.getTime().equals(TTPoll.RESERVE))
+                    continue;
+                String m = s.getLuckyMan();
+                if ( Integer.valueOf(m).intValue() % 2 ==0)
+                    even ++;
+                else odd++;
+            }
+
+            System.out.println("even: " + even);
+            System.out.println("odd: "+ odd);
         }
 
     }

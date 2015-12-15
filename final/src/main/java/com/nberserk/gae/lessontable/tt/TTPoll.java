@@ -3,7 +3,7 @@ package com.nberserk.gae.lessontable.tt;
 import java.util.*;
 
 public class TTPoll {
-    private static String RESERVE = "취소";
+    public static String RESERVE = "취소";
 
     static public class Slot implements Comparable<Slot>{
         String time;
@@ -61,13 +61,13 @@ public class TTPoll {
             return time.compareTo(o.getTime());
         }
 
-        public void lottery() {
+        public void lottery(Random r) {
             if(time.equals(RESERVE))
                 return;
             int size = voter.size();
             if(size==0)
                 return;
-            int lucky = new Random().nextInt(size);
+            int lucky = r.nextInt(size);
             luckyMan = voter.get(lucky);
         }
 
@@ -89,8 +89,9 @@ public class TTPoll {
         state = 1;
     }
     public void endPoll(){
+        Random r = new Random(System.currentTimeMillis());
         for (Slot s : slots) {
-            s.lottery();
+            s.lottery(r);
         }
         state = 2;
     }
