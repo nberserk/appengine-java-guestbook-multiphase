@@ -67,6 +67,10 @@ public class TTPoll {
             int size = voter.size();
             if(size==0)
                 return;
+            if (size==1){
+                luckyMan = voter.get(0);
+                return;
+            }
             int lucky = r.nextInt(size);
             luckyMan = voter.get(lucky);
         }
