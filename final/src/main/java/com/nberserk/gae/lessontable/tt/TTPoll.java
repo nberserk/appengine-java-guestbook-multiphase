@@ -4,6 +4,15 @@ import java.util.*;
 
 public class TTPoll {
     public static String RESERVE = "취소";
+    public static int MAX_LUCKY_GUY = 6;
+
+    static String[] times = {
+            "A타임 5:30",
+            "B타임 6:00",
+            "C타임 6:30",
+            "D타임 7:00",
+            RESERVE
+    };
 
     static public class Slot implements Comparable<Slot>{
         String time;
@@ -67,12 +76,23 @@ public class TTPoll {
             int size = voter.size();
             if(size==0)
                 return;
-            if (size==1){
+            if (size<=MAX_LUCKY_GUY){
                 luckyMan = voter.get(0);
+                for (int i = 1; i < size; i++) {
+                    luckyMan += ", " + voter.get(i);
+                }
                 return;
             }
-            int lucky = r.nextInt(size);
-            luckyMan = voter.get(lucky);
+
+            ArrayList<String> copy = new ArrayList<>(voter);
+            int l = r.nextInt(copy.size());
+            luckyMan = copy.get(l);
+            copy.remove(l);
+            for (int i = 1; i < MAX_LUCKY_GUY; i++) {
+                l = r.nextInt(copy.size());
+                luckyMan += ", " + copy.get(l);
+                copy.remove(l);
+            }
         }
 
         public String getLuckyMan(){
@@ -126,22 +146,9 @@ public class TTPoll {
         Calendar date = findTuesDay();
         dateString = String.format("%d년 %d월 %d일 - 레슨시간표.", date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
 
-        // make empty time slot
-        slots.add(new Slot("5:30"));
-        slots.add(new Slot("5:40"));
-        slots.add(new Slot("5:50"));
-        slots.add(new Slot("6:00"));
-        slots.add(new Slot("6:10"));
-        slots.add(new Slot("6:20"));
-        slots.add(new Slot("6:30"));
-        slots.add(new Slot("6:40"));
-        slots.add(new Slot("6:50"));
-        slots.add(new Slot("7:00"));
-        slots.add(new Slot("7:10"));
-        slots.add(new Slot("7:20"));
-        slots.add(new Slot("7:30"));
-        slots.add(new Slot("7:40"));
-        slots.add(new Slot(RESERVE));
+        for (int i = 0; i < times.length; i++) {
+            slots.add(new Slot(times[i]));
+        }
     }
 
     public Set<Slot> getSlots() {

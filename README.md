@@ -6,7 +6,7 @@ my toy project using gogle app engine to remove repetitive work. each person can
 see localhost:8080/lesson.html
 
 # deploying the app
-`mvn appengine:deploy`
+`mvn appengine:update`
 
 # spec
 ## rest apis

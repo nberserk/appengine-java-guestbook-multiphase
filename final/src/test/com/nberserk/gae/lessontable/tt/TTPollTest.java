@@ -30,14 +30,17 @@ public class TTPollTest {
 
     @Test
     public void lottery(){
-        String time = "6:30";
-        String t2 = "7:30";
+        String time = TTPoll.times[0];
+        String t2 = TTPoll.times[1];
+
         String darren = "darren";
         String andrew = "andrew";
 
 
         TTPoll poll = new TTPoll();
-        poll.vote(time, darren);
+        for (int i = 0; i < 7; i++) {
+            poll.vote(time, "darren"+i);
+        }
         poll.vote(time, andrew);
         poll.vote(time, "rachael");
 
@@ -47,6 +50,7 @@ public class TTPollTest {
         assertEquals(true, poll.isPollDone());
 
         assertTrue(poll.getSlot(time).luckyMan != null);
+        System.out.println(poll.getSlot(time).luckyMan);
     }
 
     @Test
@@ -60,7 +64,7 @@ public class TTPollTest {
         }
     }
 
-    @Test
+
     public void lotteryDistribution(){
         for (int k = 0; k < 10; k++){
             TTPoll poll = new TTPoll();
