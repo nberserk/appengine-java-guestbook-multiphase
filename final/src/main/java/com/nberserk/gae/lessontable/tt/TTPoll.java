@@ -4,7 +4,7 @@ import java.util.*;
 
 public class TTPoll {
     public static String RESERVE = "취소";
-    public static int MAX_LUCKY_GUY = 6;
+    public static int MAX_LUCKY_GUY = 5;
 
     static String[] times = {
             "A타임 5:30",
@@ -14,8 +14,16 @@ public class TTPoll {
             RESERVE
     };
 
+    static String[] descs = {
+            "7부",
+            "7부",
+            "6부",
+            "5부",
+            ""
+    };
+
     static public class Slot implements Comparable<Slot>{
-        String time;
+        String time, desc;
         String luckyMan;
         ArrayList<String> voter = new ArrayList<String>();
 
@@ -23,9 +31,9 @@ public class TTPoll {
         public Slot(String time){
             this.time = time;
         }
-        public Slot(String time, String name){
+        public Slot(String time, String desc){
             this.time = time;
-            voter.add(name);
+            this.desc = desc;
         }
 
         public void addVoter(String v){
@@ -147,7 +155,7 @@ public class TTPoll {
         dateString = String.format("%d년 %d월 %d일 - 레슨시간표.", date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
 
         for (int i = 0; i < times.length; i++) {
-            slots.add(new Slot(times[i]));
+            slots.add(new Slot(times[i], descs[i]));
         }
     }
 
@@ -175,8 +183,8 @@ public class TTPoll {
         //
         Slot s = getSlot(time);
         if (s==null){
-            s = new Slot(time, name);
-            slots.add(s);
+            //s = new Slot(time, name);
+            //slots.add(s);
         }else{
             s.addVoter(name);
         }

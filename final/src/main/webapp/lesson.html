@@ -91,6 +91,8 @@ $(document).ready(function(){
 	        var row = $('<tr>');
 	        var col = $('<td>', {text: data.time});
 	        row.append(col)
+	        var col = $('<td>', {text: data.desc});
+	        row.append(col)
 	        var col = $('<td>', {id: 'td_'+data.time, text: data.voter});
 	        row.append(col);
 	        var col = $('<td>', {text: data.luckyMan});
@@ -131,7 +133,8 @@ $(document).ready(function(){
     <table class="table table-striped ">
         <thead>
             <tr>
-                <th>시간 </th>
+                <th class="col-md-1">시간 </th>
+                <th class="col-md-1">비고</th>
                 <th>신청자 </th>
                 <th>당첨자</th>
             </tr>
