@@ -4,6 +4,7 @@ package com.nberserk.gae.lessontable.tt;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.nberserk.gae.lessontable.Common;
+import com.nberserk.gae.lessontable.tt.data.TTPoll;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

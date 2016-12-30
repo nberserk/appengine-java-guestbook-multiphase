@@ -1,5 +1,7 @@
 package com.nberserk.gae.lessontable.tt;
 
+import com.nberserk.gae.lessontable.tt.data.Slot;
+import com.nberserk.gae.lessontable.tt.data.TTPoll;
 import org.junit.Test;
 
 import java.util.Random;
@@ -20,7 +22,7 @@ public class TTPollTest {
 
         TTPoll poll = new TTPoll();
         poll.vote(time, darren);
-        TTPoll.Slot s = poll.getSlot(time);
+        Slot s = poll.getSlot(time);
         assertEquals( true, s.isVoted(darren) );
 
         poll.vote(t2, darren);
@@ -69,7 +71,7 @@ public class TTPollTest {
         for (int k = 0; k < 10; k++){
             TTPoll poll = new TTPoll();
             int idx = 0;
-            for (TTPoll.Slot s : poll.getSlots()){
+            for (Slot s : poll.getSlots()){
 
                 for (int i = 0; i < 2; i++) {
                     poll.vote(s.getTime(), new Integer(idx).toString());
@@ -83,7 +85,7 @@ public class TTPollTest {
             int even = 0;
             int odd = 0;
 
-            for (TTPoll.Slot s : poll.getSlots()){
+            for (Slot s : poll.getSlots()){
                 if (s.getTime().equals(TTPoll.RESERVE))
                     continue;
                 String m = s.getLuckyMan();
