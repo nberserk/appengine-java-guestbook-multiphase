@@ -22,6 +22,10 @@
         <servlet-name>tt_trigger</servlet-name>
         <servlet-class>com.nberserk.gae.lessontable.tt.TriggerServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>nosamo</servlet-name>
+        <servlet-class>com.nberserk.gae.lessontable.tt.NosamoServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>vote</servlet-name>
         <url-pattern>/vote</url-pattern>
@@ -41,6 +45,10 @@
     <servlet-mapping>
         <servlet-name>tt_trigger</servlet-name>
         <url-pattern>/trigger</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>nosamo</servlet-name>
+        <url-pattern>/nosamo</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>weeklylesson.html</welcome-file>
