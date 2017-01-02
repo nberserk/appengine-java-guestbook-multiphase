@@ -2,7 +2,7 @@
 package com.nberserk.gae.lessontable.tt;
 
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nberserk.gae.lessontable.Common;
 import com.nberserk.gae.lessontable.tt.data.TTPoll;
 
@@ -11,15 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class VoteServlet extends HttpServlet {    
 	private static final long serialVersionUID = 1435452240677102479L;
 	public static final String KIND = "vote";
     public static final String ENTITY_KEY = "json";
     public static final String PARAM_DATE = "date";
-    public static final String URL_REDIRECT = "/lesson.html";    
-
-    private static Gson sGson = new Gson();
+    public static final String URL_REDIRECT = "/lesson.html";
 
     /**
      * 
@@ -35,7 +34,8 @@ public class VoteServlet extends HttpServlet {
             if(!entity.hasProperty(ENTITY_KEY))
                 return null;
             Text text = (Text) entity.getProperty(ENTITY_KEY);
-            TTPoll tt = sGson.fromJson(text.getValue(), TTPoll.class);
+            Type listType = new TypeToken<TTPoll>(){}.getType();
+            TTPoll tt = Common.getGson().fromJson(text.getValue(), listType);
             return tt;
         } catch (EntityNotFoundException e) {
             return null;
@@ -52,7 +52,7 @@ public class VoteServlet extends HttpServlet {
         } catch (EntityNotFoundException e) {
             entity = new Entity(KIND, week);
         }
-        String jsonString = sGson.toJson(poll);
+        String jsonString = Common.getGson().toJson(poll);
         Text text = new Text(jsonString);
         entity.setProperty(ENTITY_KEY, text);
         ds.put(entity);
@@ -75,7 +75,7 @@ public class VoteServlet extends HttpServlet {
             tt = new TTPoll();
             updateTimeTable(week, tt);
         }
-        String jsonString = sGson.toJson(tt);
+        String jsonString = Common.getGson().toJson(tt);
         Common.info("tt_table: " + jsonString);
         response.getWriter().write(jsonString);
     }

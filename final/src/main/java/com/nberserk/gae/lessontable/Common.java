@@ -19,6 +19,7 @@ public class Common {
     static {
         RuntimeTypeAdapterFactory<Slot> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
                 .of(Slot.class, "type")
+                .registerSubtype(Slot.class)
                 .registerSubtype(SlotSorted.class);
 
         gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();

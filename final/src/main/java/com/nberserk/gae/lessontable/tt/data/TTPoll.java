@@ -38,11 +38,7 @@ public class TTPoll {
     public void endPoll(){
         Random r = new Random(System.currentTimeMillis());
         for (Slot s : slots) {
-            if (s instanceof SlotSorted ){
-                SlotSorted ss = (SlotSorted)s;
-                ss.lottery(r);
-            }else
-                s.lottery(r);
+            s.lottery(r);
         }
         state = 2;
     }

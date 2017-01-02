@@ -1,7 +1,5 @@
 package com.nberserk.gae.lessontable.tt.data;
 
-import com.nberserk.gae.lessontable.Common;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,6 +7,7 @@ import java.util.Random;
  * Created by darren on 30/12/2016.
  */
 public class SlotSorted extends Slot{
+
     ArrayList<String> sorted;
 
     public SlotSorted(){
@@ -38,6 +37,6 @@ public class SlotSorted extends Slot{
         }
         luckyMan = sorted.toString();
 
-        Common.info("sorted lottery called");
+        sLogger.info("sorted lottery called");
     }
 }
