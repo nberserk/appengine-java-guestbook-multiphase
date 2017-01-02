@@ -6,13 +6,11 @@ import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.nberserk.gae.lessontable.Common;
 import com.nberserk.gae.lessontable.tt.data.TTPoll;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class VoteServlet extends HttpServlet {    
 	private static final long serialVersionUID = 1435452240677102479L;
@@ -21,16 +19,8 @@ public class VoteServlet extends HttpServlet {
     public static final String PARAM_DATE = "date";
     public static final String URL_REDIRECT = "/lesson.html";    
 
-    private static Gson sGson = new Gson();    
-    
-    public static String getThisWeek(){
-    	Date now = new Date();
-        SimpleDateFormat sd = new SimpleDateFormat("yyww");
-        TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
-        sd.setTimeZone(tz);
-        return sd.format(now);
-    }
-    
+    private static Gson sGson = new Gson();
+
     /**
      * 
      * @param week : week
@@ -42,6 +32,8 @@ public class VoteServlet extends HttpServlet {
 
         try {
             Entity entity = ds.get(key);
+            if(!entity.hasProperty(ENTITY_KEY))
+                return null;
             Text text = (Text) entity.getProperty(ENTITY_KEY);
             TTPoll tt = sGson.fromJson(text.getValue(), TTPoll.class);
             return tt;
@@ -58,13 +50,34 @@ public class VoteServlet extends HttpServlet {
         try {
             entity = ds.get(key);
         } catch (EntityNotFoundException e) {
-            entity = new Entity(VoteServlet.KIND, week);
+            entity = new Entity(KIND, week);
         }
         String jsonString = sGson.toJson(poll);
         Text text = new Text(jsonString);
-        entity.setProperty(VoteServlet.ENTITY_KEY, text);
+        entity.setProperty(ENTITY_KEY, text);
         ds.put(entity);
         return jsonString;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String week = req.getParameter(PARAM_DATE);
+        if(week==null)
+            week = Common.getThisWeek();
+
+        //response.addHeader("Access-Control-Allow-Origin", "*");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        TTPoll tt = getTimeTable(week);
+        if(tt==null) {
+            tt = new TTPoll();
+            updateTimeTable(week, tt);
+        }
+        String jsonString = sGson.toJson(tt);
+        Common.info("tt_table: " + jsonString);
+        response.getWriter().write(jsonString);
     }
     
     @Override
@@ -91,7 +104,7 @@ public class VoteServlet extends HttpServlet {
         
         String week = req.getParameter("date");
         if (week==null){
-            week = getThisWeek();
+            week = Common.getThisWeek();
         }
         Common.info("desiredDate:"+week);
         

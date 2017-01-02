@@ -1,15 +1,18 @@
 package com.nberserk.gae.lessontable.tt.data;
 
+import com.nberserk.gae.lessontable.Common;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
 * Created by darren on 30/12/2016.
 */
 public class Slot implements Comparable<Slot>{
-    String time, desc;
-    String luckyMan;
-    ArrayList<String> voter = new ArrayList<String>();
+    protected String time, desc;
+    protected String luckyMan;
+    protected ArrayList<String> voter = new ArrayList<String>();
 
     public Slot(){}
     public Slot(String time){
@@ -23,6 +26,7 @@ public class Slot implements Comparable<Slot>{
     public void addVoter(String v){
         voter.add(v);
     }
+    public List<String> getVoter(){ return  voter;}
 
     public boolean isVoted(String name){
         if ( voter.contains(name))
@@ -85,6 +89,7 @@ public class Slot implements Comparable<Slot>{
             luckyMan += ", " + copy.get(l);
             copy.remove(l);
         }
+        Common.info("lottery called");
     }
 
     public String getLuckyMan(){

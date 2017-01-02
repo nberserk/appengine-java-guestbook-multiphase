@@ -1,7 +1,7 @@
 package com.nberserk.gae.lessontable.tt;
 
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nberserk.gae.lessontable.Common;
 import com.nberserk.gae.lessontable.tt.data.NosamoPoll;
 
@@ -10,24 +10,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class NosamoServlet extends HttpServlet {
 	private static final long serialVersionUID = -6535578691334962972L;
-	private static Gson sGson = new Gson();
-    public static final String KIND = "nosamo";
-    public static final String ENTITY_KEY = "json";
+    public static final String ENTITY_KEY = "nosamo";
     public static final String PARAM_DATE = "date";
     public static final String URL_REDIRECT = "/nosamo.html";
 
 
-    public NosamoPoll getData(String week) {
+    public static NosamoPoll getData(String week) {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Key key = KeyFactory.createKey(KIND, week);
+        Key key = KeyFactory.createKey(VoteServlet.KIND, week);
 
         try {
             Entity entity = ds.get(key);
+            if(!entity.hasProperty(ENTITY_KEY))
+                return null;
             Text text = (Text) entity.getProperty(ENTITY_KEY);
-            NosamoPoll tt = sGson.fromJson(text.getValue(), NosamoPoll.class);
+            Type listType = new TypeToken<NosamoPoll>(){}.getType();
+            NosamoPoll tt = Common.getGson().fromJson(text.getValue(), listType);
             return tt;
         } catch (EntityNotFoundException e) {
             return null;
@@ -36,7 +38,7 @@ public class NosamoServlet extends HttpServlet {
 
     public static String saveData(String week, NosamoPoll poll){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Key key = KeyFactory.createKey(KIND, week);
+        Key key = KeyFactory.createKey(VoteServlet.KIND, week);
 
         Entity entity = null;
         try {
@@ -44,9 +46,9 @@ public class NosamoServlet extends HttpServlet {
         } catch (EntityNotFoundException e) {
             entity = new Entity(VoteServlet.KIND, week);
         }
-        String jsonString = sGson.toJson(poll);
+        String jsonString = Common.getGson().toJson(poll);
         Text text = new Text(jsonString);
-        entity.setProperty(VoteServlet.ENTITY_KEY, text);
+        entity.setProperty(ENTITY_KEY, text);
         ds.put(entity);
         return jsonString;
     }
@@ -57,7 +59,7 @@ public class NosamoServlet extends HttpServlet {
 		
 		String week = req.getParameter(PARAM_DATE);
 		if(week==null)
-			week = VoteServlet.getThisWeek();
+			week = Common.getThisWeek();
 		
 		//response.addHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("application/json");
@@ -68,8 +70,8 @@ public class NosamoServlet extends HttpServlet {
             tt = new NosamoPoll();
             saveData(week, tt);
         }
-        String jsonString = sGson.toJson(tt);
-        Common.info("tt_table: " + jsonString);
+        String jsonString = Common.getGson().toJson(tt);
+        Common.info("nosamo: " + jsonString);
         response.getWriter().write(jsonString);		
 	}
 
@@ -95,7 +97,7 @@ public class NosamoServlet extends HttpServlet {
 
         String week = req.getParameter("date");
         if (week==null){
-            week = VoteServlet.getThisWeek();
+            week = Common.getThisWeek();
         }
         Common.info("desiredDate:"+week);
 
@@ -108,7 +110,7 @@ public class NosamoServlet extends HttpServlet {
 
         NosamoPoll poll = getData(week);
         if (poll==null){
-            Common.info("tt_vote: entity not found, strange. when this can be happen?");
+            Common.info("nosamo: entity not found, strange. when this can be happen?");
             poll = new NosamoPoll();
         }
 
@@ -119,7 +121,7 @@ public class NosamoServlet extends HttpServlet {
 
             response.getWriter().write(json);
         }else{
-            Common.info("tt_vote ignored: vote not available.");
+            Common.info("nosamo ignored: vote not available.");
 
             response.sendError(500, "vote not available.");
         }

@@ -1,9 +1,15 @@
 package com.nberserk.gae.lessontable.tt;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.nberserk.gae.lessontable.tt.data.NosamoPoll;
 import com.nberserk.gae.lessontable.tt.data.Slot;
+import com.nberserk.gae.lessontable.tt.data.SlotSorted;
 import com.nberserk.gae.lessontable.tt.data.TTPoll;
 import org.junit.Test;
 
+import java.lang.reflect.Type;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -14,8 +20,8 @@ public class TTPollTest {
 
     @Test
     public void vote(){
-        String time = "6:30";
-        String t2 = "7:30";
+        String time = TTPoll.times[0];
+        String t2 = TTPoll.times[1];
         String darren = "darren";
         String andrew = "andrew";
 
@@ -26,7 +32,7 @@ public class TTPollTest {
         assertEquals( true, s.isVoted(darren) );
 
         poll.vote(t2, darren);
-        assertEquals(0, poll.getSlot(time).voter.size());
+        assertEquals(0, poll.getSlot(time).getVoter().size());
         assertEquals(true, poll.getSlot(t2).isVoted(darren));
     }
 
@@ -51,8 +57,8 @@ public class TTPollTest {
         poll.endPoll();
         assertEquals(true, poll.isPollDone());
 
-        assertTrue(poll.getSlot(time).luckyMan != null);
-        System.out.println(poll.getSlot(time).luckyMan);
+        assertTrue(poll.getSlot(time).getLuckyMan() != null);
+        System.out.println(poll.getSlot(time).getLuckyMan());
     }
 
     @Test
@@ -64,6 +70,52 @@ public class TTPollTest {
             int lucky = r.nextInt(size);
             System.out.println(lucky);
         }
+    }
+
+    @Test
+    public void NosamoPoll(){
+        TTPoll p = new NosamoPoll();
+        assertEquals(2, p.getSlots().size());
+
+        p.startPoll();
+        p.vote(NosamoPoll.NOSAMO_SLOT, "darren");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "andrew");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "rachael");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "a");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "b");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "c");
+        p.endPoll();
+
+        //assertEquals(6, p.getSlot(NosamoPoll.NOSAMO_SLOT) )
+
+        assertTrue(p.getSlot(NosamoPoll.NOSAMO_SLOT) != null);
+        System.out.println(p.getSlot(NosamoPoll.NOSAMO_SLOT));
+    }
+
+    @Test
+    public void NosamoPollGson(){
+        TTPoll p = new NosamoPoll();
+        p.startPoll();
+        p.vote(NosamoPoll.NOSAMO_SLOT, "darren");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "andrew");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "rachael");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "a");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "b");
+        p.vote(NosamoPoll.NOSAMO_SLOT, "c");
+
+        RuntimeTypeAdapterFactory<Slot> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
+                .of(Slot.class, "type")
+                .registerSubtype(SlotSorted.class);
+
+        Gson gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
+        Type listType = new TypeToken<NosamoPoll>(){}.getType();
+
+        String string = gson.toJson(p);
+
+
+        NosamoPoll p2 = gson.fromJson(string, listType);
+        p2.endPoll();
+        System.out.println(p2);
     }
 
 

@@ -15,10 +15,6 @@
         <servlet-class>com.nberserk.gae.lessontable.tt.VoteServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>tt_table</servlet-name>
-        <servlet-class>com.nberserk.gae.lessontable.tt.TableServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>tt_trigger</servlet-name>
         <servlet-class>com.nberserk.gae.lessontable.tt.TriggerServlet</servlet-class>
     </servlet>
@@ -37,10 +33,6 @@
     <servlet-mapping>
         <servlet-name>tt_vote</servlet-name>
         <url-pattern>/tt_vote</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>tt_table</servlet-name>
-        <url-pattern>/tt_table</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>tt_trigger</servlet-name>

@@ -1,12 +1,17 @@
 package com.nberserk.gae.lessontable.tt.data;
 
-import java.util.*;
+import com.nberserk.gae.lessontable.Common;
+
+import java.util.Calendar;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class TTPoll {
     public static String RESERVE = "취소";
     public static int MAX_LUCKY_GUY = 5;
 
-    static String[] times = {
+    public static String[] times = {
             "A타임 5:30",
             "B타임 6:00",
             "C타임 6:30",
@@ -14,7 +19,7 @@ public class TTPoll {
             RESERVE
     };
 
-    static String[] descs = {
+    public static String[] descs = {
             "7부",
             "7부",
             "6부",
@@ -33,7 +38,11 @@ public class TTPoll {
     public void endPoll(){
         Random r = new Random(System.currentTimeMillis());
         for (Slot s : slots) {
-            s.lottery(r);
+            if (s instanceof SlotSorted ){
+                SlotSorted ss = (SlotSorted)s;
+                ss.lottery(r);
+            }else
+                s.lottery(r);
         }
         state = 2;
     }
@@ -50,18 +59,8 @@ public class TTPoll {
         return false;
     }
 
-    public static Calendar findTuesDay() {
-        Calendar date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"));
-        int diff = Calendar.TUESDAY - date.get(Calendar.DAY_OF_WEEK);
-//        if (!(diff > 0)) {
-//            diff += 7;
-//        }
-        date.add(Calendar.DAY_OF_MONTH, diff);
-        return date;
-    }
-
     public TTPoll(){
-        Calendar date = findTuesDay();
+        Calendar date = Common.findTuesDay();
         dateString = String.format("%d년 %d월 %d일 - 레슨시간표.", date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
 
         for (int i = 0; i < times.length; i++) {

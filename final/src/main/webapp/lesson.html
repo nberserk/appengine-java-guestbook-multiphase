@@ -34,7 +34,9 @@ $(document).ready(function(){
             console.log(data);
             var row = $('<tr>');
 	        var col = $('<td>', {text: data.time});
-	        row.append(col)
+	        row.append(col);
+	        var col = $('<td>', {text: data.desc});
+	        row.append(col);
 	        var col = $('<td>', {id: 'td_'+data.time, text: data.voter});
 	        row.append(col);
 	        var col = $('<td>', {text: data.luckyMan});
@@ -71,7 +73,7 @@ $(document).ready(function(){
 	     return false;
 	 });
 
-    $.getJSON("/tt_table", function(tt){
+    $.getJSON("/tt_vote", function(tt){
         console.log("tt_table");
         console.log(tt);
 
