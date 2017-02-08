@@ -13,15 +13,15 @@
         <timezone>Asia/Seoul</timezone>
     </cron>
     <cron>
-        <url>/trigger?cmd=enable&key=nosamo</url>
+        <url>/trigger?cmd=enable&amp;key=nosamo</url>
         <description>enable poll </description>
-        <schedule>every monday 08:00</schedule>
+        <schedule>every thursday 08:00</schedule>
         <timezone>Asia/Seoul</timezone>
     </cron>
     <cron>
-        <url>/trigger?cmd=disable&key=nosamo</url>
+        <url>/trigger?cmd=disable&amp;key=nosamo</url>
         <description>close poll </description>
-        <schedule>every tuesday 15:00</schedule>
+        <schedule>every thursday 15:00</schedule>
         <timezone>Asia/Seoul</timezone>
     </cron>
 </cronentries>

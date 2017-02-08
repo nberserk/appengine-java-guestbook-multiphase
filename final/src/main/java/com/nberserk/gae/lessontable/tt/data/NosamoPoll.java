@@ -5,7 +5,7 @@ import com.nberserk.gae.lessontable.Common;
 import java.util.Calendar;
 
 public class NosamoPoll extends TTPoll{
-    public static String NOSAMO_SLOT = "노사모 17:00";
+    public static String NOSAMO_SLOT = "오사모 19:00";
 
     public NosamoPoll(){
         Calendar date = Common.findMonDay();
