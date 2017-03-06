@@ -81,7 +81,7 @@ $(document).ready(function(){
             $('#votePanel').hide();
             $('#voteBtn').addClass('disabled')
             console.log("disable vote")
-            $('#alertMsg').text("지금은 레슨 신청 시간이 아닙니다. 매주 화요일 오전 8시에 투표가 열리고, 오후 3시에 마감이 됩니다. ");
+            $('#alertMsg').text("지금은 레슨 신청 시간이 아닙니다. 매주 수요일 오전 8시에 투표가 열리고, 오후 3시에 마감이 됩니다. ");
         }else{
             $('#votePanel').show();
             $('#voteBtn').removeClass('disabled')
@@ -100,6 +100,9 @@ $(document).ready(function(){
 	        var col = $('<td>', {text: data.luckyMan});
 	        row.append(col);
 	        list.append(row);
+	    });
+	    $.each(tt.slots, function(index, data){
+	        $('select').append($('<option>', {value:data.time, text:data.time}));
 	    });
 	    if (tt.dateString){
 	        $('#tableHeader').text(tt.dateString);
@@ -176,11 +179,11 @@ $(document).ready(function(){
                 <label for="lessonTime" class="col-sm-2 control-label">시 간 :</label>
                 <div class="col-sm-3">
                     <select name="lessonTime" id="lessonTime" class="form-control">
-                        <option value="취소" selected>취소</option>
-                        <option value="A타임 5:30">A타임 5:30</option>
-                        <option value="B타임 6:00">B타임 6:00</option>
-                        <option value="C타임 6:30">C타임 6:30</option>
-                        <option value="D타임 7:00">D타임 7:00</option>
+                        <!--<option value="취소" selected>취소</option>-->
+                        <!--<option value="A타임 5:30">A타임 5:30</option>-->
+                        <!--<option value="B타임 6:00">B타임 6:00</option>-->
+                        <!--<option value="C타임 6:30">C타임 6:30</option>-->
+                        <!--<option value="D타임 7:00">D타임 7:00</option>-->
                     </select>
                 </div>
             </div>

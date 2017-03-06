@@ -12,17 +12,17 @@ public class TTPoll {
     public static int MAX_LUCKY_GUY = 5;
 
     public static String[] times = {
-            "A타임 5:30",
-            "B타임 6:00",
-            "C타임 6:30",
-            "D타임 7:00",
+            "A타임 6:10",
+            "B타임 6:40",
+            "C타임 7:15",
+            "D타임 7:40",
             RESERVE
     };
 
     public static String[] descs = {
             "7부",
-            "7부",
-            "6부",
+            "6-7부",
+            "5-6부",
             "5부이상",
             ""
     };

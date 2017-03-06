@@ -3,13 +3,13 @@
     <cron>
         <url>/trigger?cmd=enable</url>
         <description>enable poll </description>
-        <schedule>every tuesday 8:00</schedule>
+        <schedule>every wednesday 8:00</schedule>
         <timezone>Asia/Seoul</timezone>
     </cron>
     <cron>
         <url>/trigger?cmd=disable</url>
         <description>close poll </description>
-        <schedule>every tuesday 15:00</schedule>
+        <schedule>every wednesday 15:00</schedule>
         <timezone>Asia/Seoul</timezone>
     </cron>
     <cron>
