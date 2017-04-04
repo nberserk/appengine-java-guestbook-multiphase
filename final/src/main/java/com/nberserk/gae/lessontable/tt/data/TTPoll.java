@@ -15,7 +15,7 @@ public class TTPoll {
             "A타임 6:10",
             "B타임 6:40",
             "C타임 7:15",
-            "D타임 7:40",
+            "D타임 7:45",
             RESERVE
     };
 

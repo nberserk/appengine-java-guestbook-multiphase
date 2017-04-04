@@ -34,12 +34,14 @@ public class Common {
 	}
 
     public static Calendar findTuesDay() {
-        Calendar date = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"));
-        int diff = Calendar.TUESDAY - date.get(Calendar.DAY_OF_WEEK);
+        TimeZone tz = TimeZone.getTimeZone("Asia/Seoul");
+        Calendar date = Calendar.getInstance(tz);
+        int diff = Calendar.WEDNESDAY - date.get(Calendar.DAY_OF_WEEK);
 //        if (!(diff > 0)) {
 //            diff += 7;
 //        }
         date.add(Calendar.DAY_OF_MONTH, diff);
+        date.setTimeZone(tz);
         return date;
     }
 
