@@ -2,7 +2,8 @@
 package com.nberserk.gae.lessontable.tennis;
 
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.repackaged.com.google.gson.Gson;
+
+import com.google.gson.Gson;
 import com.nberserk.gae.lessontable.Common;
 import com.nberserk.gae.lessontable.tennis.TimeTable.TimeSlot;
 
@@ -21,8 +22,7 @@ public class VoteServlet extends HttpServlet {
     public static final String PARAM_DATE = "date";
     public static final String URL_REDIRECT = "/weeklylesson.html";
     
-    
-    private static Gson sGson = new Gson();    
+    private static Gson sGson = new Gson();
     
     public static String getTodayDate(){
     	Date now = new Date();
